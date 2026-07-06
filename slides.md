@@ -30,6 +30,10 @@ section {
   background: var(--bg);
   padding: 56px 64px;
   line-height: 1.4;
+  /* anchor content (and the title) to the top so headings don't drift with content height */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 h1 { color: var(--ill-blue); font-size: 46px; margin: 0 0 12px 0; }
 h2 { color: var(--ill-blue); font-size: 34px; margin: 0 0 18px 0;
@@ -59,7 +63,8 @@ td { padding: 7px 14px; border-bottom: 1px solid #dde3ea; }
 .key { background: #fff4ee; border: 2px solid var(--ill-orange); border-radius: 10px; padding: 14px 20px; }
 img { display: block; margin: 0 auto; }
 
-/* Title / section-divider layouts */
+/* Title / section-divider layouts — these two stay vertically centered on purpose */
+section.title, section.divider { justify-content: center; }
 section.title { background: linear-gradient(135deg, #13294B 0%, #0b6cbf 100%); color: #fff; }
 section.title h1 { color: #fff; font-size: 52px; }
 section.title h2 { color: #ffd9c7; border: none; font-size: 28px; }
