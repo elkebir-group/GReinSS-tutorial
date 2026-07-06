@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+
+# notebook checkpoints
+.ipynb_checkpoints/
+
+# transient training artifacts written into the code submodule at runtime
+code/_tutorial_*.pt
+code/_tutorial_*.npz
+code/example_model.pt
+code/graph_model.pt
+
+# scratch
+_slidepngs/
+assets/pretrain.log
