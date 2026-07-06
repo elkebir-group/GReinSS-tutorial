@@ -104,7 +104,7 @@ Goal: you leave able to apply it to your own problem.
 
 ---
 
-## The recurring problem in cancer genomics
+## The recurring problem in computational biology
 
 We rarely observe the biological state we care about. We observe **something generated from it**.
 
