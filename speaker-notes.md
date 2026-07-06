@@ -1,6 +1,6 @@
 # GReinSS Tutorial — Speaker Notes
 
-*NCI Spring School on Algorithmic Cancer Biology · 30-minute slot*
+*NCI Spring School on Algorithmic Cancer Biology*
 
 One block per slide. → NOTEBOOK slides are the live-demo hand-offs.
 
@@ -12,7 +12,7 @@ Hi everyone. Today: a hands-on tutorial on GReinSS — a method for a problem th
 
 ### 2. The recurring problem in computational biology
 
-The unifying pattern: a hidden discrete structure S, indirect observation X, and a KNOWN or partially-known likelihood Pr(X|S). Trees, CNV sets, isoforms — all fit. This is "self-supervised": the physics/biology of measurement is known; the state is not.
+The unifying pattern: a hidden discrete structure S, indirect observation X, and a KNOWN or partially-known likelihood Pr(X|S). Trees, CNA sets, isoforms — all fit. This is "self-supervised": the physics/biology of measurement is known; the state is not.
 
 ### 3. Two things we want
 
@@ -38,38 +38,46 @@ This is the whole method in one line. The numerator Pr(Xi|τ) is the usual "how 
 
 Key teaching moment. Without rescaling, τ1 has the highest raw reward, so naive PG puts ALL mass on it — but then X2 has zero probability and the joint likelihood is ZERO. With the denominator, as soon as τ1 gets probability its reward drops (it's dividing by its own success), so the policy is pushed to also cover X2. Equilibrium = the likelihood optimum. Note τ3 dies: it's dominated by τ2 for explaining X2. The method finds the RIGHT support.
 
-### 9. The training loop
+### 9. The reward is dynamic — that's the whole trick
+
+Payoff of the title. The numerator is per-trajectory fit; the denominator is the current model's total probability of Xi — it shifts as θ learns, so we can't precompute it. Each iteration we sample trajectories and average Pr(Xi|τ) to estimate it. As a state gets covered, its denominator grows and its reward shrinks — automatic load balancing.
+
+### 10. The training loop
 
 Emphasize the API surface: the user supplies (a) a generator and (b) Pr(X|S). That's it. The reward machinery, sampling, and gradient are provided. This is exactly what the notebook will show — you'll write those two functions and call train().
 
-### 10. Off-policy learning (when on-policy is too slow)
+### 11. Off-policy learning (when on-policy is too slow)
 
 Practical must-have for hard problems. Instead of blindly sampling from the policy, we tilt sampling toward states that actually fit each observation — provably the best proposal. In our biology applications this is where domain knowledge enters: a fast classical method proposes candidate states, and GReinSS refines the distribution over them. Keep this slide brief unless the audience asks.
 
-### 11. → NOTEBOOK · Demo 1: Set reconstruction
+### 12. The scoreboard — who actually maximizes the likelihood?
+
+The positive flip of the opening "why tools struggle" table. Same objective across the board; only GReinSS provably maximizes the joint data likelihood. Naive PG collapses to one state; GFlowNets match rewards, not likelihood; EM-based generative models approximate via point estimates; local search has no shared model. This is the one-slide "why us" scoreboard.
+
+### 13. → NOTEBOOK · Demo 1: Set reconstruction
 
 SWITCH TO JUPYTER. Walk through: load observations → define Pr(X|S) (one line) → build generator net → train ~200 epochs live (watch the likelihood curve rise) → infer states → compare to naive thresholding. The punchline: GReinSS denoises using structure shared across observations, beating per-pixel rounding.
 
-### 12. Results — simulations
+### 14. Results — simulations
 
 Two combinatorial state types, same method. Left: graphs — GReinSS dominates especially when observations are information-poor (few walks). Right: sets — GReinSS is the only method that scales to large universes. GEM-based methods (VAE/autoregressive/diffusion) plateau; the closest RL cousins (naive PG, GFlowNet) fail. The reward rescaling is the difference.
 
-### 13. → NOTEBOOK · Demo 2: Graph inference (pre-trained)
+### 15. → NOTEBOOK · Demo 2: Graph inference (pre-trained)
 
 SWITCH TO JUPYTER (second section). Heavier model, so we ship a pre-trained checkpoint. Show: load model → simpleInference → compare predicted adjacency to the ground-truth graph we saved during pre-training → report F1 and visualize one graph. This mirrors the paper's Fig on graph inference but on your own generated instance with known truth.
 
-### 14. Application — RNA isoforms beat RSEM
+### 16. Application — RNA isoforms beat RSEM
 
 The payoff for this audience. Isoform quantification is a textbook latent-variable problem: short reads are indirect observations of full-length transcripts. RSEM is the standard EM tool GTEx ships. Dropping GReinSS in — with a trivial Pr(X|S) — matches long-read ground truth far better. Panel c: on MBD2, GReinSS recovers the two true isoforms with near-correct proportions; RSEM splits mass across wrong isoforms. Panel d: distribution of (GReinSS - RSEM) error is shifted negative → GReinSS wins across the genome.
 
-### 15. GReinSS already powers two cancer methods
+### 17. GReinSS already powers two cancer methods
 
-GReinSS isn't just a new paper method — it's the generalization of machinery that already produced two cancer-genomics tools. If you work on trees, CNVs, isoforms, or any grow-able discrete structure with a known likelihood, this framework likely applies to you.
+GReinSS isn't just a new paper method — it's the generalization of machinery that already produced two cancer-genomics tools. If you work on trees, CNAs, isoforms, or any grow-able discrete structure with a known likelihood, this framework likely applies to you.
 
-### 16. When should you reach for GReinSS?
+### 18. When should you reach for GReinSS?
 
 Decision guide. The two hard requirements: an incremental generator and a likelihood. If you have those, the four-line recipe is all you need to start — exactly what the notebook demonstrates.
 
-### 17. Thank you — let's build
+### 19. Thank you — let's build
 
 Wrap up: the method is one reward formula with a clean theorem, it beats the standard tools on simulations and on real isoform data, and it's a drop-in for discrete latent-state problems in cancer genomics. Open the notebook and try it on your own Pr(X|S).

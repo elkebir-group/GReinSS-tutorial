@@ -1,6 +1,6 @@
 # GReinSS Tutorial — NCI Spring School on Algorithmic Cancer Biology
 
-A 30-minute tutorial: **slide deck** + **live Jupyter notebook** for GReinSS
+A tutorial: **slide deck** + **live Jupyter notebook** for GReinSS
 (Generative Reinforcement Learning of Structured States).
 
 ## Contents
@@ -58,17 +58,33 @@ EPOCHS=3500 python3 pretrain_graph.py    # ~15 min on CPU; writes assets/graph_*
 
 ## Compile the slides
 
+Recipes live in the `justfile` (run `just` or `just --list` to see them all):
+
 ```bash
-marp slides.md --pdf  --allow-local-files -o slides.pdf     # PDF
-marp -p slides.md --allow-local-files                       # live preview while editing
+just all        # rebuild slides.pdf + offline slides.html + speaker-notes handout
+just pdf        # just the PDF deck
+just html       # just the offline slides.html viewer
+just notes      # just the speaker-notes.{md,html,pdf} handout
+just preview    # live preview in the browser, reloading on save
 ```
 
-`slides.html` (self-contained offline viewer) and the `speaker-notes.*` handout are
-regenerated from `slides.md` with the helper scripts in `scripts/` — see that folder.
-Note: a plain `marp --html` export still fetches KaTeX math fonts from a CDN, so the
-committed `slides.html` instead embeds pixel-perfect rendered slide images (fully offline).
+Equivalent raw commands, if you don't have `just`:
 
-## Suggested 30-minute flow
+```bash
+marp slides.md --html --pdf --allow-local-files -o slides.pdf   # PDF
+marp -p slides.md --html --allow-local-files                    # live preview while editing
+```
+
+The `--html` flag is **mandatory**: `slides.md` embeds raw HTML (`<div>` columns) and
+inline `<svg>` figures that are escaped to literal text without it.
+
+`slides.html` (self-contained offline viewer) and the `speaker-notes.*` handout are
+regenerated from `slides.md` with the helper scripts in `scripts/` (wrapped by the
+`just html` / `just notes` recipes). Note: a plain `marp --html` export still fetches
+KaTeX math fonts from a CDN, so the committed `slides.html` instead embeds pixel-perfect
+rendered slide images (fully offline).
+
+## Suggested flow
 
 | Time | Slides | Notes |
 |---|---|---|

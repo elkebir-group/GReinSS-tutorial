@@ -38,7 +38,7 @@ for ch in chunks:
 
 # --- Markdown ---
 md = ['# GReinSS Tutorial — Speaker Notes', '',
-      '*NCI Spring School on Algorithmic Cancer Biology · 30-minute slot*', '',
+      '*NCI Spring School on Algorithmic Cancer Biology*', '',
       'One block per slide. → NOTEBOOK slides are the live-demo hand-offs.', '', '---', '']
 for num, title, notes in slides:
     md.append(f'### {num}. {title}')
@@ -69,7 +69,7 @@ page = ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
         '.body p{margin:6px 0;font-size:14.5px;}.body p.none{color:#9aa4b0;font-style:italic;}'
         '@media print{body{max-width:none;}.num{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}'
         '</style></head><body><header><h1>GReinSS Tutorial — Speaker Notes</h1>'
-        '<p>NCI Spring School on Algorithmic Cancer Biology · 30-minute slot · '
+        '<p>NCI Spring School on Algorithmic Cancer Biology · '
         '→ NOTEBOOK = live-demo hand-off</p></header>' + ''.join(cards) + '</body></html>')
 open(os.path.join(TUT, 'speaker-notes.html'), 'w').write(page)
 print(f'wrote speaker-notes.md and speaker-notes.html ({len(slides)} slides)')
