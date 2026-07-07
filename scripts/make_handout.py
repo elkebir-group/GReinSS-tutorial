@@ -21,7 +21,7 @@ def notes_of(ch):
     out = []
     for m in re.finditer(r'<!--(.*?)-->', ch, re.DOTALL):
         c = m.group(1).strip()
-        if c.startswith('_') or c.startswith('/*') or 'root' in c[:40] or len(c) < 30:
+        if c.startswith('_') or c.startswith('/*') or c.startswith('include:') or 'root' in c[:40] or len(c) < 30:
             continue
         out.append(re.sub(r'\s*\n\s*', ' ', c).strip())
     return out

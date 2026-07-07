@@ -15,3 +15,6 @@ code/graph_model.pt
 _slidepngs/
 _chk/
 assets/pretrain.log
+
+# generated marp input (assets/svg/*.svg spliced in by scripts/build_slides.py)
+slides.gen.md

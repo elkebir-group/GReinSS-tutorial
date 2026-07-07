@@ -1,0 +1,65 @@
+<svg viewBox="0 0 900 168" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
+  <!-- gridlines -->
+  <line x1="55" y1="28" x2="845" y2="28" stroke="#cbd3dd" stroke-width="1" stroke-dasharray="4 4"/>
+  <line x1="55" y1="118" x2="845" y2="118" stroke="#cbd3dd" stroke-width="1" stroke-dasharray="4 4"/>
+  <line x1="55" y1="73" x2="845" y2="73" stroke="#FF5F05" stroke-width="1.5" stroke-dasharray="6 5" opacity="0.85"/>
+  <text x="60" y="68" font-size="14" fill="#b0330a">threshold = &#189;</text>
+  <!-- y axis -->
+  <line x1="55" y1="15" x2="55" y2="126" stroke="#b9c2cd" stroke-width="1.5"/>
+  <text x="46" y="34" text-anchor="end" font-size="19" font-family="KaTeX_Main" fill="#5b6672">1</text>
+  <text x="46" y="124" text-anchor="end" font-size="19" font-family="KaTeX_Main" fill="#5b6672">0</text>
+  <text x="46" y="79" text-anchor="end" font-size="19" fill="#5b6672">&#189;</text>
+  <!-- stems: true -> observed -->
+  <g stroke="#ddd0c6" stroke-width="1.5">
+    <line x1="95" y1="118" x2="95" y2="104.5"/>
+    <line x1="160.5" y1="28" x2="160.5" y2="46"/>
+    <line x1="225.9" y1="118" x2="225.9" y2="61.3"/>
+    <line x1="291.4" y1="118" x2="291.4" y2="122.5"/>
+    <line x1="356.8" y1="28" x2="356.8" y2="17.2"/>
+    <line x1="422.3" y1="28" x2="422.3" y2="40.6"/>
+    <line x1="487.7" y1="118" x2="487.7" y2="96.4"/>
+    <line x1="553.2" y1="118" x2="553.2" y2="112.6"/>
+    <line x1="618.6" y1="28" x2="618.6" y2="82.9"/>
+    <line x1="684.1" y1="118" x2="684.1" y2="100"/>
+    <line x1="749.5" y1="28" x2="749.5" y2="35.2"/>
+    <line x1="815" y1="118" x2="815" y2="91"/>
+  </g>
+  <!-- error rings (thresholding flips these) -->
+  <g fill="none" stroke="#FF5F05" stroke-width="2.5">
+    <circle cx="225.9" cy="61.3" r="11.5"/>
+    <circle cx="618.6" cy="82.9" r="11.5"/>
+  </g>
+  <!-- observed (noisy) X_i : red -->
+  <g fill="#cf2f1c">
+    <circle cx="95" cy="104.5" r="6.5"/>
+    <circle cx="160.5" cy="46" r="6.5"/>
+    <circle cx="225.9" cy="61.3" r="6.5"/>
+    <circle cx="291.4" cy="122.5" r="6.5"/>
+    <circle cx="356.8" cy="17.2" r="6.5"/>
+    <circle cx="422.3" cy="40.6" r="6.5"/>
+    <circle cx="487.7" cy="96.4" r="6.5"/>
+    <circle cx="553.2" cy="112.6" r="6.5"/>
+    <circle cx="618.6" cy="82.9" r="6.5"/>
+    <circle cx="684.1" cy="100" r="6.5"/>
+    <circle cx="749.5" cy="35.2" r="6.5"/>
+    <circle cx="815" cy="91" r="6.5"/>
+  </g>
+  <!-- true set S*_i : navy -->
+  <g fill="#13294B">
+    <circle cx="95" cy="118" r="6.5"/>
+    <circle cx="160.5" cy="28" r="6.5"/>
+    <circle cx="225.9" cy="118" r="6.5"/>
+    <circle cx="291.4" cy="118" r="6.5"/>
+    <circle cx="356.8" cy="28" r="6.5"/>
+    <circle cx="422.3" cy="28" r="6.5"/>
+    <circle cx="487.7" cy="118" r="6.5"/>
+    <circle cx="553.2" cy="118" r="6.5"/>
+    <circle cx="618.6" cy="28" r="6.5"/>
+    <circle cx="684.1" cy="118" r="6.5"/>
+    <circle cx="749.5" cy="28" r="6.5"/>
+    <circle cx="815" cy="118" r="6.5"/>
+  </g>
+  <text x="861" y="122" font-size="22" fill="#9aa4b0">&#8943;</text>
+  <!-- x axis label -->
+  <text x="450" y="152" text-anchor="middle" font-size="19" fill="#5b6672">universe <tspan font-family="KaTeX_Math" font-style="italic">U</tspan> &#8202;(one set <tspan font-family="KaTeX_Math" font-style="italic">i</tspan> of <tspan font-family="KaTeX_Math" font-style="italic">N</tspan>)</text>
+</svg>

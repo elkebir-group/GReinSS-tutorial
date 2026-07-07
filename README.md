@@ -7,7 +7,7 @@ A tutorial: **slide deck** + **live Jupyter notebook** for GReinSS
 
 | File | What it is |
 |---|---|
-| `slides.md` | Marp slide deck (source). Speaker notes are in `<!-- HTML comments -->`. |
+| `slides.md` | Marp slide deck (source). Speaker notes are in `<!-- HTML comments -->`; SVG figures are pulled in from `assets/svg/` via `<!-- include: -->` markers. |
 | `slides.pdf` | Compiled deck (regenerate with the command below). |
 | `slides.html` | **Self-contained** offline slide viewer (all images inlined; no network needed). Keys: `←`/`→` navigate, `N` toggle speaker notes, `F` fullscreen. |
 | `speaker-notes.pdf` | Printable speaker-notes handout (one block per slide). |
@@ -15,7 +15,7 @@ A tutorial: **slide deck** + **live Jupyter notebook** for GReinSS
 | `GReinSS_demo.ipynb` | The live notebook you run during the talk. |
 | `GReinSS_demo_executed.ipynb` | Pre-run copy with outputs — **fallback** if live execution fails. |
 | `pretrain_graph.py` | Generates the graph sim + ground truth and pre-trains the graph model. |
-| `assets/` | Paper figures (PNG) used by the deck + pre-trained graph model & data. |
+| `assets/` | Paper figures (PNG) used by the deck + pre-trained graph model & data. `assets/svg/` holds the deck's inline SVG figures (spliced in at build time). |
 | `code/` | **Git submodule** → [`elkebir-group/GReinSS`](https://github.com/elkebir-group/GReinSS) (the library the notebook imports). |
 | `scripts/` | Helpers that regenerate `slides.html` and the `speaker-notes` handout. |
 
@@ -29,9 +29,15 @@ git clone --recursive <this-repo-url>
 git submodule update --init
 ```
 
+Install the Python dependencies (pinned in `requirements.txt`: numpy, scipy,
+torch, matplotlib, + JupyterLab to run the notebook):
+
 ```bash
-# needs numpy, scipy, torch, matplotlib (+ jupyter to run the notebook)
-pip install numpy scipy torch matplotlib jupyter
+# with uv (recommended)
+uv venv --python 3.10 && uv pip install -r requirements.txt
+
+# or with pip
+pip install -r requirements.txt
 ```
 
 The notebook imports the library from the `code/` submodule and patches `torch.load`
@@ -71,12 +77,21 @@ just preview    # live preview in the browser, reloading on save
 Equivalent raw commands, if you don't have `just`:
 
 ```bash
-marp slides.md --html --pdf --allow-local-files -o slides.pdf   # PDF
-marp -p slides.md --html --allow-local-files                    # live preview while editing
+python3 scripts/build_slides.py                                    # slides.md -> slides.gen.md
+marp slides.gen.md --html --pdf --allow-local-files -o slides.pdf  # PDF
+marp -p slides.gen.md --html --allow-local-files                   # live preview
 ```
 
-The `--html` flag is **mandatory**: `slides.md` embeds raw HTML (`<div>` columns) and
+The `--html` flag is **mandatory**: the deck embeds raw HTML (`<div>` columns) and
 inline `<svg>` figures that are escaped to literal text without it.
+
+**Build step.** Large inline `<svg>` figures live as separate files in `assets/svg/`
+and are referenced from `slides.md` by `<!-- include: assets/svg/NAME.svg -->` markers.
+`scripts/build_slides.py` (run automatically by every `just` recipe) splices them back
+into `slides.gen.md`, which is what marp actually renders — so the SVGs stay *inline*
+and keep the deck's KaTeX fonts. Edit `slides.md` and the `assets/svg/*.svg` files;
+`slides.gen.md` is a generated artifact (git-ignored). Run marp on `slides.md`
+directly and the figures render as empty comments.
 
 `slides.html` (self-contained offline viewer) and the `speaker-notes.*` handout are
 regenerated from `slides.md` with the helper scripts in `scripts/` (wrapped by the

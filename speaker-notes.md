@@ -38,17 +38,17 @@ Same diagram, re-labeled — say it out loud: "nothing about the machinery chang
 
 The method in one line: what we optimize (the log-likelihood gradient) equals how we optimize it (a policy gradient with the dynamically rescaled reward). The numerator Pr(Xi|τ) is "how well does this trajectory explain observation i"; the DENOMINATOR Pr(Xi|θ) is the model's total probability of Xi, which rescales each observation's contribution. Theorem 1: this policy gradient is unbiased for the log-likelihood gradient — gradient taken ONLY through log Pr(τ|θ), the reward treated as constant each step.
 
-### 8. GReinSS training loop
-
-The training loop IS the RL cycle from the primer, with our reward plugged in: sample τ from the policy → score with Pr(Xi|τ) → policy-gradient update θ. The one addition over vanilla RL is on the loop-back leg: the denominator Pr(Xi|θ) shifts as θ learns, so each iteration we re-estimate it by sampling (average Pr(Xi|τ) over sampled trajectories). As a state gets covered its denominator grows and its reward shrinks — automatic load balancing. API surface: the user supplies only (a) a generator for S and (b) the likelihood Pr(X|S). Everything else — reward machinery, sampling, gradient — is provided. That's exactly what the notebook will show: write those two functions and call train().
-
-### 9. Intuition behind dynamic rewards — why the denominator Pr(X_imid theta)?
+### 8. Intuition behind dynamic rewards — why the denominator Pr(X_imid theta)?
 
 Policy $\theta\equiv\Pr(\tau\mid\theta)$ over $\tau_1,\tau_2,\tau_3$ ($\tau_j$ builds $S_j$); marginal $\Pr(X_i\mid\theta)=\sum_\tau\Pr(\tau\mid\theta)\,\Pr(X_i\mid\tau)$.
 
 > Reward **shrinks as it succeeds** ⇒ the policy covers *every* observation.
 
 θ IS the policy: the bars plot Pr(τ|θ), and each panel is the DIFFERENT θ* that its reward selects. The values are exact optima, not eyeballed. Assume one X1 and one X2. LEFT (raw reward = Pr(Xi|τ)): per-trajectory reward (.5,.3,.2); maximizing E_τ[r] is linear in the policy, so all mass goes to the top, τ1 → θ*=(1,0,0). Then Pr(X2|θ)=0 and the joint L=0. RIGHT (rescaled): Thm 1 makes this maximize the data likelihood L = Pr(X1|θ)·Pr(X2|θ) = (.5 p1)(.3 p2 + .2 p3). τ3 is dominated by τ2 for X2 (.2<.3) so p3=0; then L = .15 p1 p2 with p1+p2=1, maximized at p1=p2=.5 → θ*=(.5,.5,0), L=.25×.15=.0375 (the global optimum). Punchline: the denominator = automatic load-balancing across observations.
+
+### 9. GReinSS training loop
+
+The training loop IS the RL cycle from the primer, with our reward plugged in: sample τ from the policy → score with Pr(Xi|τ) → policy-gradient update θ. The one addition over vanilla RL is on the loop-back leg: the denominator Pr(Xi|θ) shifts as θ learns, so each iteration we re-estimate it by sampling (average Pr(Xi|τ) over sampled trajectories). As a state gets covered its denominator grows and its reward shrinks — automatic load balancing. API surface: the user supplies only (a) a generator for S and (b) the likelihood Pr(X|S). Everything else — reward machinery, sampling, gradient — is provided. That's exactly what the notebook will show: write those two functions and call train().
 
 ### 10. → NOTEBOOK · Demo 1: Set reconstruction
 

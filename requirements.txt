@@ -1,0 +1,15 @@
+# GReinSS tutorial — Python dependencies
+# Pinned to the presenter's known-good stack (Python 3.10.14).
+# Install with uv:   uv venv --python 3.10 && uv pip install -r requirements.txt
+# Or with pip:       pip install -r requirements.txt
+
+numpy==2.2.6
+scipy==1.15.3
+torch==2.11.0
+matplotlib==3.10.9
+
+# Jupyter front-end to run GReinSS_demo.ipynb.
+# Left unpinned: the presenter's base env has jupyter-core/ipykernel but no
+# full front-end pinned, so use a current stable JupyterLab.
+jupyterlab
+ipykernel==7.3.0

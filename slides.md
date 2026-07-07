@@ -165,37 +165,7 @@ This is "self-supervised": the physics/biology of measurement is known; the stat
 
 <div class="s3fig">
 
-<svg viewBox="0 0 172 124" height="150" xmlns="http://www.w3.org/2000/svg">
-  <line x1="16" y1="24" x2="86" y2="12" stroke="#c2cbd6" stroke-width="1"/>
-  <line x1="16" y1="24" x2="86" y2="45" stroke="#c2cbd6" stroke-width="1"/>
-  <line x1="16" y1="24" x2="86" y2="79" stroke="#c2cbd6" stroke-width="1"/>
-  <line x1="16" y1="24" x2="86" y2="112" stroke="#c2cbd6" stroke-width="1"/>
-  <line x1="16" y1="60" x2="86" y2="12" stroke="#c2cbd6" stroke-width="1"/>
-  <line x1="16" y1="60" x2="86" y2="45" stroke="#c2cbd6" stroke-width="1"/>
-  <line x1="16" y1="60" x2="86" y2="79" stroke="#c2cbd6" stroke-width="1"/>
-  <line x1="16" y1="60" x2="86" y2="112" stroke="#c2cbd6" stroke-width="1"/>
-  <line x1="16" y1="96" x2="86" y2="12" stroke="#c2cbd6" stroke-width="1"/>
-  <line x1="16" y1="96" x2="86" y2="45" stroke="#c2cbd6" stroke-width="1"/>
-  <line x1="16" y1="96" x2="86" y2="79" stroke="#c2cbd6" stroke-width="1"/>
-  <line x1="16" y1="96" x2="86" y2="112" stroke="#c2cbd6" stroke-width="1"/>
-  <line x1="86" y1="12" x2="156" y2="42" stroke="#c2cbd6" stroke-width="1"/>
-  <line x1="86" y1="12" x2="156" y2="82" stroke="#c2cbd6" stroke-width="1"/>
-  <line x1="86" y1="45" x2="156" y2="42" stroke="#c2cbd6" stroke-width="1"/>
-  <line x1="86" y1="45" x2="156" y2="82" stroke="#c2cbd6" stroke-width="1"/>
-  <line x1="86" y1="79" x2="156" y2="42" stroke="#c2cbd6" stroke-width="1"/>
-  <line x1="86" y1="79" x2="156" y2="82" stroke="#c2cbd6" stroke-width="1"/>
-  <line x1="86" y1="112" x2="156" y2="42" stroke="#c2cbd6" stroke-width="1"/>
-  <line x1="86" y1="112" x2="156" y2="82" stroke="#c2cbd6" stroke-width="1"/>
-  <circle cx="16" cy="24" r="7" fill="#13294B"/>
-  <circle cx="16" cy="60" r="7" fill="#13294B"/>
-  <circle cx="16" cy="96" r="7" fill="#13294B"/>
-  <circle cx="86" cy="12" r="7" fill="#13294B"/>
-  <circle cx="86" cy="45" r="7" fill="#13294B"/>
-  <circle cx="86" cy="79" r="7" fill="#13294B"/>
-  <circle cx="86" cy="112" r="7" fill="#13294B"/>
-  <circle cx="156" cy="42" r="7" fill="#13294B"/>
-  <circle cx="156" cy="82" r="7" fill="#13294B"/>
-</svg>
+<!-- include: assets/svg/theta-network.svg -->
 
 </div>
 
@@ -206,23 +176,7 @@ This is "self-supervised": the physics/biology of measurement is known; the stat
 
 <div class="platebox">
 
-<svg viewBox="0 0 306 124" width="332" xmlns="http://www.w3.org/2000/svg" font-family="KaTeX_Main, Georgia, 'Times New Roman', serif" fill="#1b1f24">
-  <defs>
-    <marker id="pah2" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 Z" fill="#1b1f24"/>
-    </marker>
-  </defs>
-  <rect x="100" y="8" width="200" height="108" rx="10" fill="none" stroke="#1b1f24" stroke-width="2"/>
-  <text x="294" y="110" text-anchor="end" font-size="15"><tspan font-family="KaTeX_Math" font-style="italic">i</tspan> &#8712; [<tspan font-family="KaTeX_Math" font-style="italic">N</tspan>]</text>
-  <circle cx="30" cy="58" r="26" fill="#fff" stroke="#1b1f24" stroke-width="2"/>
-  <text x="30" y="67" text-anchor="middle" font-size="27" font-family="KaTeX_Math" font-style="italic">&#952;</text>
-  <circle cx="140" cy="58" r="32" fill="#fff" stroke="#1b1f24" stroke-width="2"/>
-  <text x="138" y="67" text-anchor="middle" font-size="28" font-family="KaTeX_Math" font-style="italic">S<tspan font-size="18" dy="7">i</tspan></text>
-  <circle cx="260" cy="58" r="32" fill="#cfd4da" stroke="#1b1f24" stroke-width="2"/>
-  <text x="258" y="67" text-anchor="middle" font-size="28" font-family="KaTeX_Math" font-style="italic">X<tspan font-size="18" dy="7">i</tspan></text>
-  <line x1="58" y1="58" x2="106" y2="58" stroke="#1b1f24" stroke-width="2" marker-end="url(#pah2)"/>
-  <line x1="174" y1="58" x2="226" y2="58" stroke="#1b1f24" stroke-width="2" marker-end="url(#pah2)"/>
-</svg>
+<!-- include: assets/svg/plate-generative.svg -->
 
 <span class="emit"><img src="assets/state-graph.png"><span class="arw">&#8594;</span><img src="assets/observation-curve.png"></span>
 
@@ -325,57 +279,14 @@ th:nth-child(2), td:nth-child(2) { width: 285px; }
 
 <div style="flex: 1; text-align: center;">
 
-<svg viewBox="0 0 300 250" width="300" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
-  <defs>
-    <marker id="rlah" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 Z" fill="#8a94a0"/>
-    </marker>
-  </defs>
-  <line x1="169.5" y1="78" x2="228.5" y2="170" stroke="#8a94a0" stroke-width="2.5" marker-end="url(#rlah)"/>
-  <line x1="212" y1="196" x2="88" y2="196" stroke="#8a94a0" stroke-width="2.5" marker-end="url(#rlah)"/>
-  <line x1="71.5" y1="170" x2="130.5" y2="78" stroke="#8a94a0" stroke-width="2.5" marker-end="url(#rlah)"/>
-  <text x="212" y="120" font-size="14" fill="#FF5F05" font-style="italic">sample</text>
-  <text x="150" y="189" text-anchor="middle" font-size="14" fill="#FF5F05" font-style="italic">score</text>
-  <text x="90" y="120" text-anchor="end" font-size="14" fill="#FF5F05" font-style="italic">update &#952;</text>
-  <circle cx="150" cy="46" r="36" fill="#f4f6f9" stroke="#13294B" stroke-width="2.5"/>
-  <text x="150" y="42" text-anchor="middle" font-size="13" font-weight="bold" fill="#13294B">Policy</text>
-  <text x="150" y="63" text-anchor="middle" font-size="18" font-style="italic" fill="#1b1f24">&#960;<tspan font-size="12" dy="4">&#952;</tspan></text>
-  <circle cx="250" cy="196" r="36" fill="#f4f6f9" stroke="#13294B" stroke-width="2.5"/>
-  <text x="250" y="192" text-anchor="middle" font-size="13" font-weight="bold" fill="#13294B">Trajectory</text>
-  <text x="250" y="214" text-anchor="middle" font-size="18" font-style="italic" fill="#1b1f24">&#964;</text>
-  <circle cx="50" cy="196" r="36" fill="#f4f6f9" stroke="#13294B" stroke-width="2.5"/>
-  <text x="50" y="192" text-anchor="middle" font-size="13" font-weight="bold" fill="#13294B">Reward</text>
-  <text x="50" y="214" text-anchor="middle" font-size="16" font-style="italic" fill="#1b1f24">r(&#964;)</text>
-</svg>
+<!-- include: assets/svg/rl-loop.svg -->
 
 </div>
 
 </div>
 <div class="center">
 
-<svg viewBox="0 0 200 268" width="210" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
-  <defs>
-    <marker id="tjah" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto">
-      <path d="M0,0 L7,3.5 L0,7 Z" fill="#7a1fa2"/>
-    </marker>
-  </defs>
-  <path d="M62,16 q-13,0 -13,13 L49,124 q0,7 -7,8 q7,1 7,8 L49,238 q0,13 13,13" fill="none" stroke="#7a1fa2" stroke-width="2.5"/>
-  <text x="26" y="142" font-size="28" font-style="italic" fill="#7a1fa2">&#964;</text>
-  <line x1="120" y1="49" x2="120" y2="81" stroke="#7a1fa2" stroke-width="2.5" marker-end="url(#tjah)"/>
-  <line x1="120" y1="121" x2="120" y2="153" stroke="#7a1fa2" stroke-width="2.5" marker-end="url(#tjah)"/>
-  <line x1="120" y1="193" x2="120" y2="225" stroke="#7a1fa2" stroke-width="2.5" marker-end="url(#tjah)"/>
-  <text x="136" y="69" font-size="15" font-style="italic" fill="#5b6672">a<tspan font-size="10" dy="4">1</tspan></text>
-  <text x="136" y="141" font-size="15" font-style="italic" fill="#5b6672">a<tspan font-size="10" dy="4">2</tspan></text>
-  <text x="136" y="213" font-size="15" font-style="italic" fill="#5b6672">a<tspan font-size="10" dy="4">3</tspan></text>
-  <circle cx="120" cy="30" r="19" fill="#f4f6f9" stroke="#13294B" stroke-width="2"/>
-  <text x="120" y="35" text-anchor="middle" font-size="16" font-style="italic" fill="#1b1f24">s<tspan font-size="10" dy="4">0</tspan></text>
-  <circle cx="120" cy="102" r="19" fill="#f4f6f9" stroke="#13294B" stroke-width="2"/>
-  <text x="120" y="107" text-anchor="middle" font-size="16" font-style="italic" fill="#1b1f24">s<tspan font-size="10" dy="4">1</tspan></text>
-  <circle cx="120" cy="174" r="19" fill="#f4f6f9" stroke="#13294B" stroke-width="2"/>
-  <text x="120" y="179" text-anchor="middle" font-size="16" font-style="italic" fill="#1b1f24">s<tspan font-size="10" dy="4">2</tspan></text>
-  <circle cx="120" cy="246" r="19" fill="#fff4ee" stroke="#FF5F05" stroke-width="2.5"/>
-  <text x="120" y="251" text-anchor="middle" font-size="15" font-style="italic" fill="#c0341a">s<tspan font-size="10" dy="4">|&#964;|</tspan></text>
-</svg>
+<!-- include: assets/svg/rl-trajectory.svg -->
 
 <div class="small" style="margin-top: 2px;">a trajectory &#964;</div>
 
@@ -435,67 +346,9 @@ th:nth-child(3), td:nth-child(3) { width: 250px; }
 
 <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
 
-<svg viewBox="0 0 210 248" width="195" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
-  <defs>
-    <marker id="gEdge" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto">
-      <path d="M0,0 L6,3 L0,6 Z" fill="#1b1f24"/>
-    </marker>
-    <marker id="gStep" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto">
-      <path d="M0,0 L7,3.5 L0,7 Z" fill="#7a1fa2"/>
-    </marker>
-  </defs>
-  <path d="M46,44 q-13,0 -13,13 L33,116 q0,7 -8,7 q8,0 8,7 L33,213 q0,13 13,13" fill="none" stroke="#7a1fa2" stroke-width="2.4"/>
-  <text x="14" y="132" font-size="26" font-style="italic" fill="#7a1fa2">&#964;</text>
-  <text x="126" y="20" text-anchor="middle" font-size="13" fill="#5b6672">empty graph</text>
-  <g transform="translate(0,40)">
-    <circle cx="74" cy="16" r="5" fill="#1b1f24"/><text x="66" y="21" text-anchor="end" font-size="14">A</text>
-    <circle cx="178" cy="16" r="5" fill="#1b1f24"/><text x="186" y="21" font-size="14">B</text>
-  </g>
-  <line x1="126" y1="76" x2="126" y2="100" stroke="#7a1fa2" stroke-width="2.6" marker-end="url(#gStep)"/>
-  <text x="139" y="93" font-size="14" font-style="italic" fill="#7a1fa2">a</text>
-  <g transform="translate(0,108)">
-    <line x1="81" y1="16" x2="171" y2="16" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#gEdge)"/>
-    <circle cx="74" cy="16" r="5" fill="#1b1f24"/><text x="66" y="21" text-anchor="end" font-size="14">A</text>
-    <circle cx="178" cy="16" r="5" fill="#1b1f24"/><text x="186" y="21" font-size="14">B</text>
-  </g>
-  <line x1="126" y1="144" x2="126" y2="168" stroke="#7a1fa2" stroke-width="2.6" marker-end="url(#gStep)"/>
-  <text x="139" y="161" font-size="14" font-style="italic" fill="#7a1fa2">b</text>
-  <g transform="translate(0,176)">
-    <line x1="81" y1="16" x2="171" y2="16" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#gEdge)"/>
-    <line x1="92" y1="42" x2="172" y2="21" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#gEdge)"/>
-    <circle cx="74" cy="16" r="5" fill="#1b1f24"/><text x="66" y="21" text-anchor="end" font-size="14">A</text>
-    <circle cx="178" cy="16" r="5" fill="#1b1f24"/><text x="186" y="21" font-size="14">B</text>
-    <circle cx="86" cy="44" r="5" fill="#1b1f24"/><text x="86" y="60" text-anchor="middle" font-size="14">C</text>
-  </g>
-</svg>
+<!-- include: assets/svg/graph-buildup.svg -->
 
-<svg viewBox="0 0 210 248" width="195" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
-  <defs>
-    <marker id="cStep" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto">
-      <path d="M0,0 L7,3.5 L0,7 Z" fill="#7a1fa2"/>
-    </marker>
-  </defs>
-  <path d="M46,44 q-13,0 -13,13 L33,116 q0,7 -8,7 q8,0 8,7 L33,213 q0,13 13,13" fill="none" stroke="#7a1fa2" stroke-width="2.4"/>
-  <text x="14" y="132" font-size="26" font-style="italic" fill="#7a1fa2">&#964;</text>
-  <text x="131" y="20" text-anchor="middle" font-size="13" fill="#5b6672">diploid</text>
-  <g transform="translate(0,40)">
-    <rect x="92" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="105" y="21" text-anchor="middle" font-size="15">2</text>
-    <rect x="120" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="133" y="21" text-anchor="middle" font-size="15">2</text>
-    <rect x="148" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="161" y="21" text-anchor="middle" font-size="15">2</text>
-  </g>
-  <line x1="131" y1="76" x2="131" y2="100" stroke="#7a1fa2" stroke-width="2.6" marker-end="url(#cStep)"/>
-  <g transform="translate(0,108)">
-    <rect x="92" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="105" y="21" text-anchor="middle" font-size="15">2</text>
-    <rect x="120" y="3" width="26" height="26" rx="3" fill="#fff4ee" stroke="#7a1fa2" stroke-width="2"/><text x="133" y="21" text-anchor="middle" font-size="15" fill="#7a1fa2" font-weight="bold">3</text>
-    <rect x="148" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="161" y="21" text-anchor="middle" font-size="15">2</text>
-  </g>
-  <line x1="131" y1="144" x2="131" y2="168" stroke="#7a1fa2" stroke-width="2.6" marker-end="url(#cStep)"/>
-  <g transform="translate(0,176)">
-    <rect x="92" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="105" y="21" text-anchor="middle" font-size="15">2</text>
-    <rect x="120" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="133" y="21" text-anchor="middle" font-size="15">3</text>
-    <rect x="148" y="3" width="26" height="26" rx="3" fill="#fff4ee" stroke="#7a1fa2" stroke-width="2"/><text x="161" y="21" text-anchor="middle" font-size="15" fill="#7a1fa2" font-weight="bold">1</text>
-  </g>
-</svg>
+<!-- include: assets/svg/cna-example.svg -->
 
 </div>
 </div>
@@ -562,94 +415,6 @@ the reward treated as constant each step.
 
 ---
 
-## GReinSS training loop
-
-<style scoped>
-.cols { align-items: center; margin: 8px 0; }
-.key { padding: 8px 20px; }
-.key .katex-display { margin: 5px 0; }
-ol { font-size: 21px; margin: 6px 0; }
-ol li { margin: 5px 0; }
-.box { padding: 10px 18px; }
-</style>
-
-<div class="cols" style="grid-template-columns: 1.8fr 1fr;">
-<div class="key">
-
-The **sample → score → update** cycle of RL, run with a reward that changes as $\theta$ learns:
-
-
-
-$$r(\tau)=\sum_{i=1}^{N}\frac{\Pr(X_i\mid\tau)}{\boxed{\Pr(X_i\mid\theta)}}\qquad\Pr(X_i\mid\theta)=\mathbb{E}_{\tau}\big[\Pr(X_i\mid\tau)\big]$$
-
-**Dynamic reward** — the boxed denominator is **re-estimated by sampling** each iteration.
-
-</div>
-<div class="center">
-
-<svg viewBox="0 0 300 250" width="340" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
-  <defs>
-    <marker id="rlah2" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 Z" fill="#8a94a0"/>
-    </marker>
-  </defs>
-  <line x1="169.5" y1="78" x2="228.5" y2="170" stroke="#8a94a0" stroke-width="2.5" marker-end="url(#rlah2)"/>
-  <line x1="212" y1="196" x2="88" y2="196" stroke="#8a94a0" stroke-width="2.5" marker-end="url(#rlah2)"/>
-  <line x1="71.5" y1="170" x2="130.5" y2="78" stroke="#8a94a0" stroke-width="2.5" marker-end="url(#rlah2)"/>
-  <text x="212" y="120" font-size="14" fill="#FF5F05" font-style="italic">sample</text>
-  <text x="150" y="189" text-anchor="middle" font-size="14" fill="#FF5F05" font-style="italic">score</text>
-  <text x="90" y="120" text-anchor="end" font-size="14" fill="#FF5F05" font-style="italic">update &#952;</text>
-  <circle cx="150" cy="46" r="36" fill="#f4f6f9" stroke="#13294B" stroke-width="2.5"/>
-  <text x="150" y="42" text-anchor="middle" font-size="13" font-weight="bold" fill="#13294B">Policy</text>
-  <text x="150" y="63" text-anchor="middle" font-size="18" font-style="italic" fill="#1b1f24">&#960;<tspan font-size="12" dy="4">&#952;</tspan></text>
-  <circle cx="250" cy="196" r="36" fill="#f4f6f9" stroke="#13294B" stroke-width="2.5"/>
-  <text x="250" y="192" text-anchor="middle" font-size="13" font-weight="bold" fill="#13294B">Trajectory</text>
-  <text x="250" y="214" text-anchor="middle" font-size="18" font-style="italic" fill="#1b1f24">&#964;</text>
-  <circle cx="50" cy="196" r="36" fill="#f4f6f9" stroke="#13294B" stroke-width="2.5"/>
-  <text x="50" y="192" text-anchor="middle" font-size="13" font-weight="bold" fill="#13294B">Reward</text>
-  <text x="50" y="214" text-anchor="middle" font-size="16" font-style="italic" fill="#1b1f24">r(&#964;)</text>
-</svg>
-
-</div>
-</div>
-
-<div class="cols" style="grid-template-columns: 1.35fr 1fr;">
-<div>
-
-**Repeat until convergence:**
-
-1. **Sample** a batch $\tau_1,\dots,\tau_M\sim\Pr(\tau\mid\theta)$
-2. **Score** each: $\Pr(X_i\mid\tau_j)$
-3. **Estimate** $\Pr(X_i\mid\theta)\approx\frac1M\sum_j\Pr(X_i\mid\tau_j)$ &nbsp;<span class="small">*(same batch)*</span>
-4. **Reward** $r(\tau_j)=\sum_i\Pr(X_i\mid\tau_j)/\Pr(X_i\mid\theta)$
-5. **Policy-gradient** step along $\mathbb{E}_\tau\big[r(\tau)\,\nabla_\theta\log\Pr(\tau\mid\theta)\big]$
-
-</div>
-<div class="box">
-
-**You supply only two things:**
-
-- a **generator** for $S$ (action-by-action)
-- the likelihood **$\Pr(X\mid S)$**
-
-Everything else is generic.
-
-</div>
-</div>
-
-<!--
-The training loop IS the RL cycle from the primer, with our reward plugged in: sample τ from
-the policy → score with Pr(Xi|τ) → policy-gradient update θ. The one addition over vanilla RL
-is on the loop-back leg: the denominator Pr(Xi|θ) shifts as θ learns, so each iteration we
-re-estimate it by sampling (average Pr(Xi|τ) over sampled trajectories). As a state gets
-covered its denominator grows and its reward shrinks — automatic load balancing.
-API surface: the user supplies only (a) a generator for S and (b) the likelihood Pr(X|S).
-Everything else — reward machinery, sampling, gradient — is provided. That's exactly what the
-notebook will show: write those two functions and call train().
--->
-
----
-
 ## Intuition behind dynamic rewards — why the denominator $\Pr(X_i\mid \theta)$?
 
 <style scoped>
@@ -699,23 +464,7 @@ notebook will show: write those two functions and call train().
 <span class="rhead">Fixed rewards 
 $r(\tau)=\Pr(X_i\mid\tau)$</span>
 
-<svg viewBox="0 0 280 210" width="190" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
-  <line x1="46" y1="18" x2="46" y2="158" stroke="#c2cbd6" stroke-width="1.5"/>
-  <line x1="46" y1="158" x2="270" y2="158" stroke="#c2cbd6" stroke-width="1.5"/>
-  <text x="38" y="26" text-anchor="end" font-size="20" font-family="KaTeX_Main" fill="#8a94a0">1</text>
-  <text x="38" y="164" text-anchor="end" font-size="20" font-family="KaTeX_Main" fill="#8a94a0">0</text>
-  <text x="18" y="92" transform="rotate(-90 18 92)" text-anchor="middle" font-size="21" font-family="KaTeX_Main" fill="#5b6672">Pr(<tspan font-family="KaTeX_Math" font-style="italic">&#964;</tspan>&#8202;|&#8202;<tspan font-family="KaTeX_Math" font-style="italic">&#952;</tspan>)</text>
-  <rect x="53" y="26" width="50" height="132" rx="3" fill="#13294B"/>
-  <text x="78" y="16" text-anchor="middle" font-size="22" font-family="KaTeX_Main" fill="#1b1f24">1.0</text>
-  <line x1="133" y1="158" x2="183" y2="158" stroke="#8a94a0" stroke-width="3"/>
-  <line x1="213" y1="158" x2="263" y2="158" stroke="#8a94a0" stroke-width="3"/>
-  <text x="78" y="184" text-anchor="middle" font-size="26" font-family="KaTeX_Math" font-style="italic" fill="#1b1f24">&#964;<tspan font-family="KaTeX_Main" font-style="normal" font-size="17" dy="6">1</tspan></text>
-  <text x="158" y="184" text-anchor="middle" font-size="26" font-family="KaTeX_Math" font-style="italic" fill="#1b1f24">&#964;<tspan font-family="KaTeX_Main" font-style="normal" font-size="17" dy="6">2</tspan></text>
-  <text x="238" y="184" text-anchor="middle" font-size="26" font-family="KaTeX_Math" font-style="italic" fill="#1b1f24">&#964;<tspan font-family="KaTeX_Main" font-style="normal" font-size="17" dy="6">3</tspan></text>
-  <text x="78" y="204" text-anchor="middle" font-size="16" fill="#8a94a0">explains <tspan font-family="KaTeX_Math" font-style="italic">X</tspan><tspan font-family="KaTeX_Main" font-size="11" dy="2">1</tspan></text>
-  <text x="158" y="204" text-anchor="middle" font-size="16" fill="#8a94a0"><tspan font-family="KaTeX_Math" font-style="italic">X</tspan><tspan font-family="KaTeX_Main" font-size="11" dy="2">2</tspan></text>
-  <text x="238" y="204" text-anchor="middle" font-size="16" fill="#8a94a0"><tspan font-family="KaTeX_Math" font-style="italic">X</tspan><tspan font-family="KaTeX_Main" font-size="11" dy="2">2</tspan></text>
-</svg>
+<!-- include: assets/svg/reward-fixed.svg -->
 
 <div class="rnote">
 
@@ -736,24 +485,7 @@ $\Pr(X_1,X_2\mid\theta)=.5\times 0=\mathbf 0$ ✗
 <span class="rhead">Dynamic rewards 
 $r(\tau)=\Pr(X_i\mid\tau)/\Pr(X_i\mid\theta)$</span>
 
-<svg viewBox="0 0 280 210" width="190" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
-  <line x1="46" y1="18" x2="46" y2="158" stroke="#c2cbd6" stroke-width="1.5"/>
-  <line x1="46" y1="158" x2="270" y2="158" stroke="#c2cbd6" stroke-width="1.5"/>
-  <text x="38" y="26" text-anchor="end" font-size="20" font-family="KaTeX_Main" fill="#8a94a0">1</text>
-  <text x="38" y="164" text-anchor="end" font-size="20" font-family="KaTeX_Main" fill="#8a94a0">0</text>
-  <text x="18" y="92" transform="rotate(-90 18 92)" text-anchor="middle" font-size="21" font-family="KaTeX_Main" fill="#5b6672">Pr(<tspan font-family="KaTeX_Math" font-style="italic">&#964;</tspan>&#8202;|&#8202;<tspan font-family="KaTeX_Math" font-style="italic">&#952;</tspan>)</text>
-  <rect x="53" y="92" width="50" height="66" rx="3" fill="#13294B"/>
-  <text x="78" y="82" text-anchor="middle" font-size="22" font-family="KaTeX_Main" fill="#1b1f24">0.5</text>
-  <rect x="133" y="92" width="50" height="66" rx="3" fill="#13294B"/>
-  <text x="158" y="82" text-anchor="middle" font-size="22" font-family="KaTeX_Main" fill="#1b1f24">0.5</text>
-  <line x1="213" y1="158" x2="263" y2="158" stroke="#8a94a0" stroke-width="3"/>
-  <text x="78" y="184" text-anchor="middle" font-size="26" font-family="KaTeX_Math" font-style="italic" fill="#1b1f24">&#964;<tspan font-family="KaTeX_Main" font-style="normal" font-size="17" dy="6">1</tspan></text>
-  <text x="158" y="184" text-anchor="middle" font-size="26" font-family="KaTeX_Math" font-style="italic" fill="#1b1f24">&#964;<tspan font-family="KaTeX_Main" font-style="normal" font-size="17" dy="6">2</tspan></text>
-  <text x="238" y="184" text-anchor="middle" font-size="26" font-family="KaTeX_Math" font-style="italic" fill="#1b1f24">&#964;<tspan font-family="KaTeX_Main" font-style="normal" font-size="17" dy="6">3</tspan></text>
-  <text x="78" y="204" text-anchor="middle" font-size="16" fill="#8a94a0">explains <tspan font-family="KaTeX_Math" font-style="italic">X</tspan><tspan font-family="KaTeX_Main" font-size="11" dy="2">1</tspan></text>
-  <text x="158" y="204" text-anchor="middle" font-size="16" fill="#8a94a0"><tspan font-family="KaTeX_Math" font-style="italic">X</tspan><tspan font-family="KaTeX_Main" font-size="11" dy="2">2</tspan></text>
-  <text x="238" y="204" text-anchor="middle" font-size="16" fill="#8a94a0"><tspan font-family="KaTeX_Math" font-style="italic">X</tspan><tspan font-family="KaTeX_Main" font-size="11" dy="2">2</tspan></text>
-</svg>
+<!-- include: assets/svg/reward-dynamic.svg -->
 
 <div class="rnote">
 
@@ -786,9 +518,84 @@ Punchline: the denominator = automatic load-balancing across observations.
 
 ---
 
+## GReinSS training loop
+
+<style scoped>
+.cols { align-items: center; margin: 8px 0; }
+.key { padding: 8px 20px; }
+.key .katex-display { margin: 5px 0; }
+ol { font-size: 21px; margin: 6px 0; }
+ol li { margin: 5px 0; }
+.box { padding: 10px 18px; }
+</style>
+
+<div class="cols" style="grid-template-columns: 1.8fr 1fr;">
+<div class="key">
+
+The **sample → score → update** cycle of RL, run with a reward that changes as $\theta$ learns:
+
+
+
+$$r(\tau)=\sum_{i=1}^{N}\frac{\Pr(X_i\mid\tau)}{\boxed{\Pr(X_i\mid\theta)}}\qquad\Pr(X_i\mid\theta)=\mathbb{E}_{\tau}\big[\Pr(X_i\mid\tau)\big]$$
+
+**Dynamic reward** — the boxed denominator is **re-estimated by sampling** each iteration.
+
+</div>
+<div class="center">
+
+<!-- include: assets/svg/training-cycle.svg -->
+
+</div>
+</div>
+
+<div class="cols" style="grid-template-columns: 1.35fr 1fr;">
+<div>
+
+**Repeat until convergence:**
+
+1. **Sample** a batch $\tau_1,\dots,\tau_M\sim\Pr(\tau\mid\theta)$
+2. **Score** each: $\Pr(X_i\mid\tau_j)$
+3. **Estimate** $\Pr(X_i\mid\theta)\approx\frac1M\sum_j\Pr(X_i\mid\tau_j)$ &nbsp;<span class="small">*(same batch)*</span>
+4. **Reward** $r(\tau_j)=\sum_i\Pr(X_i\mid\tau_j)/\Pr(X_i\mid\theta)$
+5. **Policy-gradient** step along $\mathbb{E}_\tau\big[r(\tau)\,\nabla_\theta\log\Pr(\tau\mid\theta)\big]$
+
+</div>
+<div class="box">
+
+**You supply only two things:**
+
+- a **generator** for $S$ (action-by-action)
+- the likelihood **$\Pr(X\mid S)$**
+
+Everything else is generic.
+
+</div>
+</div>
+
+<!--
+The training loop IS the RL cycle from the primer, with our reward plugged in: sample τ from
+the policy → score with Pr(Xi|τ) → policy-gradient update θ. The one addition over vanilla RL
+is on the loop-back leg: the denominator Pr(Xi|θ) shifts as θ learns, so each iteration we
+re-estimate it by sampling (average Pr(Xi|τ) over sampled trajectories). As a state gets
+covered its denominator grows and its reward shrinks — automatic load balancing.
+API surface: the user supplies only (a) a generator for S and (b) the likelihood Pr(X|S).
+Everything else — reward machinery, sampling, gradient — is provided. That's exactly what the
+notebook will show: write those two functions and call train().
+-->
+
+---
+
 <!-- _class: demo -->
 
 ## → NOTEBOOK · Demo 1: Set reconstruction
+
+<style scoped>
+.cols { align-items: start; margin: 12px 0 4px; }
+.cartoon { margin: 2px auto 0; text-align: center; }
+.cartoon svg { width: 830px; max-width: 100%; height: auto; }
+.ccap { font-size: 18px; color: var(--muted); text-align: center; margin: 2px auto 0; max-width: 900px; }
+.ccap b { color: var(--ill-blue); font-weight: 700; }
+</style>
 
 Recover binary **sets** from noisy real-valued measurements. *Trains live in ~10 s.*
 
@@ -814,6 +621,16 @@ def log_pr_x_given_g(state, obs):
 - where the **shared model fixes** noisy bits
 
 </div>
+</div>
+
+<div class="cartoon">
+<!-- include: assets/svg/set-cartoon.svg -->
+</div>
+
+<div class="ccap">
+
+<b><span style="color:#13294B">&#9679;</span> true set $S^*_i$</b> &nbsp; <b><span style="color:#cf2f1c">&#9679;</span> noisy observation $X_i$</b> &nbsp;—&nbsp; rounding at ½ flips the <span style="color:#FF5F05">&#9711;</span> circled elements; the **shared model fixes** them using structure across all $N$ sets.
+
 </div>
 
 <!--

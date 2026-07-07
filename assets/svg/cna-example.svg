@@ -1,0 +1,27 @@
+<svg viewBox="0 0 210 248" width="195" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
+  <defs>
+    <marker id="cStep" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#7a1fa2"/>
+    </marker>
+  </defs>
+  <path d="M46,44 q-13,0 -13,13 L33,116 q0,7 -8,7 q8,0 8,7 L33,213 q0,13 13,13" fill="none" stroke="#7a1fa2" stroke-width="2.4"/>
+  <text x="14" y="132" font-size="26" font-style="italic" fill="#7a1fa2">&#964;</text>
+  <text x="131" y="20" text-anchor="middle" font-size="13" fill="#5b6672">diploid</text>
+  <g transform="translate(0,40)">
+    <rect x="92" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="105" y="21" text-anchor="middle" font-size="15">2</text>
+    <rect x="120" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="133" y="21" text-anchor="middle" font-size="15">2</text>
+    <rect x="148" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="161" y="21" text-anchor="middle" font-size="15">2</text>
+  </g>
+  <line x1="131" y1="76" x2="131" y2="100" stroke="#7a1fa2" stroke-width="2.6" marker-end="url(#cStep)"/>
+  <g transform="translate(0,108)">
+    <rect x="92" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="105" y="21" text-anchor="middle" font-size="15">2</text>
+    <rect x="120" y="3" width="26" height="26" rx="3" fill="#fff4ee" stroke="#7a1fa2" stroke-width="2"/><text x="133" y="21" text-anchor="middle" font-size="15" fill="#7a1fa2" font-weight="bold">3</text>
+    <rect x="148" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="161" y="21" text-anchor="middle" font-size="15">2</text>
+  </g>
+  <line x1="131" y1="144" x2="131" y2="168" stroke="#7a1fa2" stroke-width="2.6" marker-end="url(#cStep)"/>
+  <g transform="translate(0,176)">
+    <rect x="92" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="105" y="21" text-anchor="middle" font-size="15">2</text>
+    <rect x="120" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="133" y="21" text-anchor="middle" font-size="15">3</text>
+    <rect x="148" y="3" width="26" height="26" rx="3" fill="#fff4ee" stroke="#7a1fa2" stroke-width="2"/><text x="161" y="21" text-anchor="middle" font-size="15" fill="#7a1fa2" font-weight="bold">1</text>
+  </g>
+</svg>

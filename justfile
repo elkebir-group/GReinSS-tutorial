@@ -6,26 +6,31 @@
 marp   := "marp"
 flags  := "--html --allow-local-files --theme-set themes/greinss.css"
 pngdir := "_slidepngs"
+gen    := "slides.gen.md"
 
 # List available recipes
 default:
     @just --list
 
+# Splice assets/svg/*.svg fragments into slides.gen.md (the marp input)
+build:
+    python3 scripts/build_slides.py
+
 # Compile the Marp deck to slides.pdf
-pdf:
-    {{marp}} slides.md {{flags}} --pdf -o slides.pdf
+pdf: build
+    {{marp}} {{gen}} {{flags}} --pdf -o slides.pdf
 
 # Rebuild the self-contained offline viewer slides.html (2x PNGs inlined as data URIs)
-html:
+html: build
     rm -rf {{pngdir}} && mkdir -p {{pngdir}}
-    {{marp}} slides.md {{flags}} --images png --image-scale 2 -o {{pngdir}}/s.png
+    {{marp}} {{gen}} {{flags}} --images png --image-scale 2 -o {{pngdir}}/s.png
     python3 scripts/make_offline_html.py {{pngdir}}
     rm -rf {{pngdir}}
 
 # Render slides to per-slide PNGs in _chk/ for quick visual inspection (truncation checks)
-check:
+check: build
     rm -rf _chk && mkdir -p _chk
-    {{marp}} slides.md {{flags}} --images png --image-scale 1 -o _chk/s.png
+    {{marp}} {{gen}} {{flags}} --images png --image-scale 1 -o _chk/s.png
 
 # Extract speaker notes to speaker-notes.md/.html and build speaker-notes.pdf
 notes:
@@ -37,9 +42,9 @@ notes:
 # Build every deliverable: PDF deck, offline HTML, and speaker-notes handout
 all: pdf html notes
 
-# Live preview in the browser, reloading on each save
-preview:
-    {{marp}} -p slides.md {{flags}}
+# Live preview in the browser (watches slides.gen.md; re-run `just build` after editing slides.md or an SVG)
+preview: build
+    {{marp}} -p {{gen}} {{flags}}
 
 # Pre-train the graph model (~15 min on CPU) — writes assets/graph_*.{npz,pt}
 pretrain epochs="3500":
@@ -47,4 +52,4 @@ pretrain epochs="3500":
 
 # Remove build scratch artifacts
 clean:
-    rm -rf {{pngdir}} _chk .notes.tmp.md
+    rm -rf {{pngdir}} _chk .notes.tmp.md {{gen}}
