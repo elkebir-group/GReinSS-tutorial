@@ -10,7 +10,7 @@ One block per slide. → NOTEBOOK slides are the live-demo hand-offs.
 
 Hi everyone. Today: a hands-on tutorial on GReinSS — a method for a problem that shows up all over algorithmic cancer biology: inferring hidden combinatorial states from noisy, indirect measurements. We'll cover the idea, the one theorem that makes it work, and then train it live on your laptop. Goal: you leave able to apply it to your own problem.
 
-### 2. The recurring problem in computational biology
+### 2. A recurring problem in computational biology
 
 The unifying pattern: a hidden discrete structure S, indirect observation X, and a KNOWN or partially-known likelihood Pr(X|S). Trees, CNA sets, isoforms — all fit. This is "self-supervised": the physics/biology of measurement is known; the state is not.
 

@@ -1,7 +1,7 @@
 ---
 marp: true
 title: "GReinSS: Generative Modeling of Discrete Latent Structures via Dynamic Policy Gradients"
-author: "Stefan Ivanovic, Ge Liu, Mohammed El-Kebir"
+author: "Mohammed El-Kebir"
 math: katex
 paginate: true
 ---
@@ -74,6 +74,10 @@ td { padding: 7px 14px; border-bottom: 1px solid #dde3ea; }
 .rbox .lbl { color: #c0341a; }
 .eqsplit { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: center; margin: 8px 0; }
 .eqsplit .eq { font-size: 40px; color: var(--muted); text-align: center; }
+.theorem { background: #fff8e1; border: 2px solid #f0b429; border-left: 7px solid #f0b429;
+           border-radius: 8px; padding: 8px 22px; margin: 12px 0; font-size: 22px; }
+.theorem strong { color: #8a5a00; }
+.theorem em { color: var(--ink); font-style: italic; }
 img { display: block; margin: 0 auto; }
 
 /* Title / section-divider layouts — these two stay vertically centered on purpose */
@@ -119,9 +123,9 @@ Goal: you leave able to apply it to your own problem.
 
 ---
 
-## The recurring problem in computational biology
+## A recurring problem in computational biology
 
-We rarely observe the **latent state** $S$ we care about. We observe some **indirect measurement** $X$ generated from it.
+Rather than directly observing the **latent state** $S$ we care about, we observe some indirect **measurement** $X$ generated from it.
 
 <div class="cols3">
 <div class="box center">
@@ -134,10 +138,10 @@ We rarely observe the **latent state** $S$ we care about. We observe some **indi
 
 </div>
 
-**State:** tumor evolution tree
-**Measurement:** bulk / single-cell DNA-seq
+**Latent state:** tumor evolution tree
+**Measurement:** DNA-seq
 
-<span class="cite">Ivanovic & El-Kebir,<br>RECOMB / Genome Research 2023</span>
+<span class="cite">[Ivanovic & El-Kebir, RECOMB/Genome Res. 2023]</span>
 
 </div>
 <div class="box center">
@@ -150,10 +154,10 @@ We rarely observe the **latent state** $S$ we care about. We observe some **indi
 
 </div>
 
-**State:** copy-number profile
-**Measurement:** read depth + B-allele freqs
+**Latent state:** copy-number profile
+**Measurement:** read depth + BAF
 
-<span class="cite">Ivanovic & El-Kebir,<br>Genome Biology 2025</span>
+<span class="cite">[Ivanovic & El-Kebir, Genome Biol. 2025]</span>
 
 </div>
 <div class="box center">
@@ -166,10 +170,10 @@ We rarely observe the **latent state** $S$ we care about. We observe some **indi
 
 </div>
 
-**State:** spliced transcript
+**Latent state:** spliced transcript
 **Measurement:** aligned short reads
 
-<span class="cite">Ivanovic et al.,<br>ICML 2026</span>
+<span class="cite">[Ivanovic et al., ICML 2026]</span>
 
 </div>
 </div>
@@ -199,24 +203,24 @@ $$\Pr(X\mid\theta)=\sum_{S}\Pr(X\mid S)\,\Pr(S\mid\theta)$$
 </div>
 <div class="center">
 
-<svg viewBox="0 0 440 176" width="430" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
+<svg viewBox="0 0 440 176" width="430" xmlns="http://www.w3.org/2000/svg" font-family="KaTeX_Main, Georgia, 'Times New Roman', serif" fill="#1b1f24">
   <defs>
     <marker id="pah2" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
       <path d="M0,0 L8,4 L0,8 Z" fill="#1b1f24"/>
     </marker>
   </defs>
-  <rect x="100" y="48" width="320" height="108" rx="12" fill="none" stroke="#1b1f24" stroke-width="2"/>
-  <text x="405" y="146" text-anchor="end" font-size="16" font-style="italic" fill="#5b6672">i &#8712; [N]</text>
+  <rect x="100" y="48" width="320" height="108" rx="10" fill="none" stroke="#1b1f24" stroke-width="2"/>
+  <text x="406" y="148" text-anchor="end" font-size="17"><tspan font-family="KaTeX_Math" font-style="italic">i</tspan> &#8712; [<tspan font-family="KaTeX_Math" font-style="italic">N</tspan>]</text>
   <circle cx="46" cy="102" r="26" fill="#fff" stroke="#1b1f24" stroke-width="2"/>
-  <text x="46" y="110" text-anchor="middle" font-size="26">&#952;</text>
+  <text x="46" y="111" text-anchor="middle" font-size="27" font-family="KaTeX_Math" font-style="italic">&#952;</text>
   <circle cx="178" cy="102" r="30" fill="#fff" stroke="#1b1f24" stroke-width="2"/>
-  <text x="178" y="110" text-anchor="middle" font-size="24">S<tspan font-size="15" dy="7">i</tspan></text>
+  <text x="176" y="110" text-anchor="middle" font-size="26" font-family="KaTeX_Math" font-style="italic">S<tspan font-size="17" dy="7">i</tspan></text>
   <circle cx="322" cy="102" r="30" fill="#cfd4da" stroke="#1b1f24" stroke-width="2"/>
-  <text x="322" y="110" text-anchor="middle" font-size="24">X<tspan font-size="15" dy="7">i</tspan></text>
+  <text x="320" y="110" text-anchor="middle" font-size="26" font-family="KaTeX_Math" font-style="italic">X<tspan font-size="17" dy="7">i</tspan></text>
   <line x1="73" y1="102" x2="145" y2="102" stroke="#1b1f24" stroke-width="2" marker-end="url(#pah2)"/>
   <line x1="209" y1="102" x2="289" y2="102" stroke="#1b1f24" stroke-width="2" marker-end="url(#pah2)"/>
-  <text x="109" y="86" text-anchor="middle" font-size="16" fill="#13294B">Pr(S | &#952;)</text>
-  <text x="250" y="86" text-anchor="middle" font-size="16" fill="#13294B">Pr(X | S)</text>
+  <text x="109" y="88" text-anchor="middle" font-size="17">Pr(<tspan font-family="KaTeX_Math" font-style="italic">S</tspan> | <tspan font-family="KaTeX_Math" font-style="italic">&#952;</tspan>)</text>
+  <text x="249" y="88" text-anchor="middle" font-size="17">Pr(<tspan font-family="KaTeX_Math" font-style="italic">X</tspan> | <tspan font-family="KaTeX_Math" font-style="italic">S</tspan>)</text>
 </svg>
 
 <span class="small">latent state $S_i$ (unshaded) generates the observation $X_i$ (shaded)</span>
@@ -340,6 +344,8 @@ A **policy** with parameters $\theta$ builds a state by a sequence of actions �
 - add an **element** → a set
 - add a **junction** → an isoform
 
+The policy is a **neural network** whose weights are the parameters $\theta$ we learn.
+
 Sequential construction makes *combinatorial* spaces tractable: no summation over $\mathcal S$, just **sampling** trajectories.
 
 $$\Pr(X\mid\theta)=\mathbb{E}_{\tau\sim\Pr(\tau\mid\theta)}\big[\Pr(X\mid S(\tau))\big]$$
@@ -377,7 +383,11 @@ $$\mathbb{E}_\tau\!\Big[r(\tau)\,\tfrac{d}{d\theta}\log\Pr(\tau\mid\theta)\Big]$
 </div>
 </div>
 
-**Theorem.** With this reward, the policy gradient (right) is an **unbiased estimator** of the log-likelihood gradient (left).
+<div class="theorem">
+
+**Theorem 1 (Unbiased policy gradient).** *With the dynamically changing reward $r(\tau)=\sum_{i=1}^{N}\Pr(X_i\mid\tau)/\Pr(X_i\mid\theta)$, the policy gradient $\mathbb{E}_\tau\!\big[r(\tau)\,\tfrac{d}{d\theta}\log\Pr(\tau\mid\theta)\big]$ is an unbiased estimator of $\tfrac{d}{d\theta}\log\Pr(X_{1:N}\mid\theta)$, the gradient of the log-likelihood objective.*
+
+</div>
 
 > So standard policy-gradient ascent with this reward = **maximum-likelihood** learning of $\Pr(S\mid\theta)$.
 
@@ -504,9 +514,15 @@ If sampling $\Pr(\tau\mid\theta)$ rarely produces states that explain any $X_i$,
 
 **Sample where the data says to look** — bias toward the Bayes posterior:
 
-$$q(\tau\mid X_{1:N},\theta)=\tfrac1N\sum_{i}\Pr(\tau\mid X_i,\theta),\qquad \Pr(\tau\mid X_i,\theta)=\frac{\Pr(X_i\mid\tau)\Pr(\tau\mid\theta)}{\Pr(X_i\mid\theta)}$$
+<div class="theorem">
 
-> This proposal is the **unbiased, variance-minimizing** one (Thm.); importance sampling keeps the gradient correct. *In cancer apps, a cheap heuristic (e.g. CNNaive in CNRein) seeds plausible states.*
+**Theorem 2 (Optimal off-policy proposal).** *The unbiased, variance-minimizing sampling proposal is*
+
+$$q(\tau\mid X_{1:N},\theta)=\tfrac1N\sum_{i=1}^{N}\Pr(\tau\mid X_i,\theta),\qquad \Pr(\tau\mid X_i,\theta)=\frac{\Pr(X_i\mid\tau)\,\Pr(\tau\mid\theta)}{\Pr(X_i\mid\theta)}.$$
+
+</div>
+
+> Importance sampling keeps the gradient correct. *In cancer apps, a cheap heuristic (e.g. CNNaive in CNRein) seeds plausible states.*
 
 <!--
 Practical must-have for hard problems. Instead of blindly sampling from the policy, we
@@ -683,7 +699,7 @@ of (GReinSS - RSEM) error is shifted negative → GReinSS wins across the genome
 Tumor **phylogenies** of SNVs
 *States:* mutation trees
 *Observations:* noisy DNA-seq trees
-<span class="small">Ivanovic & El-Kebir, RECOMB / Genome Research 2023</span>
+<span class="small">Ivanovic & El-Kebir, RECOMB / Genome Res. 2023</span>
 
 </div>
 <div class="box">
@@ -692,7 +708,7 @@ Tumor **phylogenies** of SNVs
 **Copy-number** evolution in single cells
 *States:* sets of CNA events per cell
 *Observations:* single-cell DNA-seq
-<span class="small">Ivanovic & El-Kebir, Genome Biology 2025</span>
+<span class="small">Ivanovic & El-Kebir, Genome Biol. 2025</span>
 
 </div>
 </div>
