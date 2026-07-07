@@ -10,17 +10,17 @@ One block per slide. → NOTEBOOK slides are the live-demo hand-offs.
 
 Hi everyone. Today: a hands-on tutorial on GReinSS — a method for a problem that shows up all over algorithmic cancer biology: inferring hidden combinatorial states from noisy, indirect measurements. We'll cover the idea, the one theorem that makes it work, and then train it live on your laptop. Goal: you leave able to apply it to your own problem.
 
-### 2. A recurring problem in computational biology
+### 2. A recurring statistical inference problem in computational biology
 
 The unifying pattern: a hidden discrete structure S, indirect observation X, and a KNOWN or partially-known likelihood Pr(X|S). Trees, CNA sets, isoforms — all fit. This is "self-supervised": the physics/biology of measurement is known; the state is not.
 
-### 3. Two things we want
+### 3. A learning and an inference problem
 
 Panel a: hidden distribution over states S*, each emits an X. We model Pr(S|θ). Two problems: (1) LEARN θ from all observations jointly — the shared model couples them; (2) INFER the best state per observation. Everything today serves these two.
 
 ### 4. Why the usual tools struggle
 
-EM: exact expectation needs summing over all states — only works for special structure (HMMs). VAE: great generative models, but the latent lives in a made-up ℝ^d, not your isoform space. Local search: per-observation, no sharing of statistical strength. Naive PG / GFlowNet are the closest cousins to what we do — and we'll see exactly why they fail.
+EM: exact expectation needs summing over all states — only works for special structure (HMMs). VI: optimizes a lower bound (ELBO) instead of the true likelihood, and you must hand-design a tractable approximate posterior q(S) over a combinatorial space — exactly what's hard here. VAE: great generative models, but the latent lives in a made-up ℝ^d, not your isoform space. Local search: per-observation, no sharing of statistical strength. Naive PG / GFlowNet are the closest cousins to what we do — and we'll see exactly why they fail.
 
 ### 5. The GReinSS idea
 

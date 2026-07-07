@@ -22,6 +22,11 @@ html:
     python3 scripts/make_offline_html.py {{pngdir}}
     rm -rf {{pngdir}}
 
+# Render slides to per-slide PNGs in _chk/ for quick visual inspection (truncation checks)
+check:
+    rm -rf _chk && mkdir -p _chk
+    {{marp}} slides.md {{flags}} --images png --image-scale 1 -o _chk/s.png
+
 # Extract speaker notes to speaker-notes.md/.html and build speaker-notes.pdf
 notes:
     python3 scripts/make_handout.py
@@ -42,4 +47,4 @@ pretrain epochs="3500":
 
 # Remove build scratch artifacts
 clean:
-    rm -rf {{pngdir}} .notes.tmp.md
+    rm -rf {{pngdir}} _chk .notes.tmp.md

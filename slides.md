@@ -49,7 +49,7 @@ section::after { color: var(--muted); font-size: 16px; }
 blockquote {
   border-left: 5px solid var(--ill-orange);
   background: var(--panel);
-  margin: 10px 0; padding: 12px 20px; color: var(--ink); font-style: normal;
+  margin: 5px 0; padding: 9px 20px; color: var(--ink); font-style: normal;
 }
 .small { font-size: 20px; color: var(--muted); }
 .tag { color: var(--ill-orange); font-weight: bold; letter-spacing: 0.5px; }
@@ -59,11 +59,27 @@ th { background: var(--ill-blue); color: #fff; padding: 8px 14px; }
 td { padding: 7px 14px; border-bottom: 1px solid #dde3ea; }
 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: center; }
 .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
-.cols3 .box { display: flex; flex-direction: column; padding: 10px 14px; font-size: 21px; }
+.cols3 .box { display: flex; flex-direction: column; padding: 7px 14px; font-size: 21px; }
 .cols3 h3 { margin: 2px 0 4px; }
-.exfig { height: 80px; display: flex; align-items: center; justify-content: center; margin: 4px 0 8px; }
-.exfig img { max-height: 80px; width: auto; }
-.cite { display: block; margin-top: auto; padding-top: 8px; font-size: 14px; color: var(--muted); font-style: italic; }
+.exfig { height: 52px; display: flex; align-items: center; justify-content: center; margin: 0 0 4px; }
+.exfig img { max-height: 52px; width: auto; }
+.midline { text-align: center; margin: 6px auto; font-size: 24px; max-width: 1040px; }
+.setup { margin-bottom: 3px; }
+.setup .box { font-size: 26px; padding-top: 8px; padding-bottom: 8px; }
+.sfig { margin-top: auto; padding-top: 6px; display: flex; align-items: flex-end; justify-content: center; }
+.sfig img { max-height: 76px; width: auto; }
+.s3fig { margin: auto 0; padding-top: 4px; display: flex; align-items: center; justify-content: center; }
+.s3fig img, .s3fig svg { max-height: 152px; width: auto; }
+.emit { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.emit img { max-height: 42px; width: auto; margin: 0; }
+.arw { font-size: 30px; color: var(--muted); line-height: 1; }
+.plate { text-align: center; margin: 2px auto; }
+.platebox { margin: auto 0; padding-top: 4px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.problem { background: #fff8e1; border: 2px solid #f0b429; border-left: 7px solid #f0b429;
+           border-radius: 8px; padding: 8px 22px; margin: 10px 0; }
+.problem strong { color: #8a5a00; }
+.problem em { color: var(--ink); font-style: italic; }
+.cite { display: block; margin-top: auto; padding-top: 4px; font-size: 14px; color: var(--muted); font-style: italic; }
 .box { background: var(--panel); border-radius: 10px; padding: 14px 20px; }
 .key { background: #fff4ee; border: 2px solid var(--ill-orange); border-radius: 10px; padding: 14px 20px; }
 .eqbox { border-radius: 10px; padding: 10px 18px; text-align: center; }
@@ -75,7 +91,7 @@ td { padding: 7px 14px; border-bottom: 1px solid #dde3ea; }
 .eqsplit { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: center; margin: 8px 0; }
 .eqsplit .eq { font-size: 40px; color: var(--muted); text-align: center; }
 .theorem { background: #fff8e1; border: 2px solid #f0b429; border-left: 7px solid #f0b429;
-           border-radius: 8px; padding: 8px 22px; margin: 12px 0; font-size: 22px; }
+           border-radius: 8px; padding: 8px 22px; margin: 12px 0; }
 .theorem strong { color: #8a5a00; }
 .theorem em { color: var(--ink); font-style: italic; }
 img { display: block; margin: 0 auto; }
@@ -104,7 +120,7 @@ section.demo h2 { color: var(--ill-orange); border-bottom-color: var(--ill-blue)
 
 <br>
 
-**Stefan Ivanovic · Ge Liu · Mohammed El-Kebir**
+**Mohammed El-Kebir**
 University of Illinois Urbana-Champaign
 
 <br>
@@ -123,9 +139,45 @@ Goal: you leave able to apply it to your own problem.
 
 ---
 
-## A recurring problem in computational biology
+## A recurring statistical inference problem in computational biology
 
-Rather than directly observing the **latent state** $S$ we care about, we observe some indirect **measurement** $X$ generated from it.
+<div class="cols3 setup">
+<div class="box center">
+
+**States** $S_{1:N} \sim \Pr^*(\mathcal{S})$
+
+<div class="sfig">
+
+![h:76](assets/state-space.png)
+
+</div>
+
+</div>
+<div class="box center">
+
+**Measurements** $X_{1:N}$ generated from $S_{1:N}$
+
+<div class="sfig">
+
+![h:40](assets/observation-curve.png)
+
+</div>
+
+</div>
+<div class="box center">
+
+$\mathcal{S}$ is typically **large and combinatorial** — graphs, strings, sets, …
+
+<div class="sfig">
+
+![h:40](assets/state-graph.png)
+
+</div>
+
+</div>
+</div>
+
+> Rather than directly observing the latent **state** $S$ we care about, we observe some indirect **measurement** $X$ generated from it.
 
 <div class="cols3">
 <div class="box center">
@@ -138,7 +190,7 @@ Rather than directly observing the **latent state** $S$ we care about, we observ
 
 </div>
 
-**Latent state:** tumor evolution tree
+**State:** tumor evolution tree
 **Measurement:** DNA-seq
 
 <span class="cite">[Ivanovic & El-Kebir, RECOMB/Genome Res. 2023]</span>
@@ -154,7 +206,7 @@ Rather than directly observing the **latent state** $S$ we care about, we observ
 
 </div>
 
-**Latent state:** copy-number profile
+**State:** copy-number profile
 **Measurement:** read depth + BAF
 
 <span class="cite">[Ivanovic & El-Kebir, Genome Biol. 2025]</span>
@@ -170,15 +222,13 @@ Rather than directly observing the **latent state** $S$ we care about, we observ
 
 </div>
 
-**Latent state:** spliced transcript
+**State:** spliced transcript
 **Measurement:** aligned short reads
 
 <span class="cite">[Ivanovic et al., ICML 2026]</span>
 
 </div>
 </div>
-
-> In each case we know the **forward model** $\Pr(X \mid S)$ — how a state $S$ produces data $X$ — but the state $S$ itself is **latent, discrete, and combinatorially large.**
 
 <!--
 The unifying pattern: a hidden discrete structure S, indirect observation X, and a
@@ -188,59 +238,102 @@ This is "self-supervised": the physics/biology of measurement is known; the stat
 
 ---
 
-## Two things we want
+## A learning and an inference problem
 
-<div class="cols">
-<div>
+<div class="cols3 setup">
+<div class="box center">
 
-**Setup.** States $S^*_1,\dots,S^*_N \sim \Pr^*(S)$, unobserved.
-We see indirect observations $X_1,\dots,X_N$, and can compute $\Pr(X\mid S)$.
+**Approximate** $\Pr^*(S)$ as $\Pr(S\mid\theta)$
 
-We fit a generative model $\Pr(S\mid\theta)$ so that
+<div class="s3fig">
 
-$$\Pr(X\mid\theta)=\sum_{S}\Pr(X\mid S)\,\Pr(S\mid\theta)$$
+![h:150](assets/hist-model.png)
 
 </div>
-<div class="center">
 
-<svg viewBox="0 0 440 176" width="430" xmlns="http://www.w3.org/2000/svg" font-family="KaTeX_Main, Georgia, 'Times New Roman', serif" fill="#1b1f24">
+</div>
+<div class="box center">
+
+**Parameters** $\theta$: a linear map or neural network
+
+<div class="s3fig">
+
+<svg viewBox="0 0 172 124" height="150" xmlns="http://www.w3.org/2000/svg">
+  <line x1="16" y1="24" x2="86" y2="12" stroke="#c2cbd6" stroke-width="1"/>
+  <line x1="16" y1="24" x2="86" y2="45" stroke="#c2cbd6" stroke-width="1"/>
+  <line x1="16" y1="24" x2="86" y2="79" stroke="#c2cbd6" stroke-width="1"/>
+  <line x1="16" y1="24" x2="86" y2="112" stroke="#c2cbd6" stroke-width="1"/>
+  <line x1="16" y1="60" x2="86" y2="12" stroke="#c2cbd6" stroke-width="1"/>
+  <line x1="16" y1="60" x2="86" y2="45" stroke="#c2cbd6" stroke-width="1"/>
+  <line x1="16" y1="60" x2="86" y2="79" stroke="#c2cbd6" stroke-width="1"/>
+  <line x1="16" y1="60" x2="86" y2="112" stroke="#c2cbd6" stroke-width="1"/>
+  <line x1="16" y1="96" x2="86" y2="12" stroke="#c2cbd6" stroke-width="1"/>
+  <line x1="16" y1="96" x2="86" y2="45" stroke="#c2cbd6" stroke-width="1"/>
+  <line x1="16" y1="96" x2="86" y2="79" stroke="#c2cbd6" stroke-width="1"/>
+  <line x1="16" y1="96" x2="86" y2="112" stroke="#c2cbd6" stroke-width="1"/>
+  <line x1="86" y1="12" x2="156" y2="42" stroke="#c2cbd6" stroke-width="1"/>
+  <line x1="86" y1="12" x2="156" y2="82" stroke="#c2cbd6" stroke-width="1"/>
+  <line x1="86" y1="45" x2="156" y2="42" stroke="#c2cbd6" stroke-width="1"/>
+  <line x1="86" y1="45" x2="156" y2="82" stroke="#c2cbd6" stroke-width="1"/>
+  <line x1="86" y1="79" x2="156" y2="42" stroke="#c2cbd6" stroke-width="1"/>
+  <line x1="86" y1="79" x2="156" y2="82" stroke="#c2cbd6" stroke-width="1"/>
+  <line x1="86" y1="112" x2="156" y2="42" stroke="#c2cbd6" stroke-width="1"/>
+  <line x1="86" y1="112" x2="156" y2="82" stroke="#c2cbd6" stroke-width="1"/>
+  <circle cx="16" cy="24" r="7" fill="#13294B"/>
+  <circle cx="16" cy="60" r="7" fill="#13294B"/>
+  <circle cx="16" cy="96" r="7" fill="#13294B"/>
+  <circle cx="86" cy="12" r="7" fill="#13294B"/>
+  <circle cx="86" cy="45" r="7" fill="#13294B"/>
+  <circle cx="86" cy="79" r="7" fill="#13294B"/>
+  <circle cx="86" cy="112" r="7" fill="#13294B"/>
+  <circle cx="156" cy="42" r="7" fill="#13294B"/>
+  <circle cx="156" cy="82" r="7" fill="#13294B"/>
+</svg>
+
+</div>
+
+</div>
+<div class="box center">
+
+**Generative model** with given $\Pr(X\mid S)$
+
+<div class="platebox">
+
+<svg viewBox="0 0 306 124" width="332" xmlns="http://www.w3.org/2000/svg" font-family="KaTeX_Main, Georgia, 'Times New Roman', serif" fill="#1b1f24">
   <defs>
     <marker id="pah2" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
       <path d="M0,0 L8,4 L0,8 Z" fill="#1b1f24"/>
     </marker>
   </defs>
-  <rect x="100" y="48" width="320" height="108" rx="10" fill="none" stroke="#1b1f24" stroke-width="2"/>
-  <text x="406" y="148" text-anchor="end" font-size="17"><tspan font-family="KaTeX_Math" font-style="italic">i</tspan> &#8712; [<tspan font-family="KaTeX_Math" font-style="italic">N</tspan>]</text>
-  <circle cx="46" cy="102" r="26" fill="#fff" stroke="#1b1f24" stroke-width="2"/>
-  <text x="46" y="111" text-anchor="middle" font-size="27" font-family="KaTeX_Math" font-style="italic">&#952;</text>
-  <circle cx="178" cy="102" r="30" fill="#fff" stroke="#1b1f24" stroke-width="2"/>
-  <text x="176" y="110" text-anchor="middle" font-size="26" font-family="KaTeX_Math" font-style="italic">S<tspan font-size="17" dy="7">i</tspan></text>
-  <circle cx="322" cy="102" r="30" fill="#cfd4da" stroke="#1b1f24" stroke-width="2"/>
-  <text x="320" y="110" text-anchor="middle" font-size="26" font-family="KaTeX_Math" font-style="italic">X<tspan font-size="17" dy="7">i</tspan></text>
-  <line x1="73" y1="102" x2="145" y2="102" stroke="#1b1f24" stroke-width="2" marker-end="url(#pah2)"/>
-  <line x1="209" y1="102" x2="289" y2="102" stroke="#1b1f24" stroke-width="2" marker-end="url(#pah2)"/>
-  <text x="109" y="88" text-anchor="middle" font-size="17">Pr(<tspan font-family="KaTeX_Math" font-style="italic">S</tspan> | <tspan font-family="KaTeX_Math" font-style="italic">&#952;</tspan>)</text>
-  <text x="249" y="88" text-anchor="middle" font-size="17">Pr(<tspan font-family="KaTeX_Math" font-style="italic">X</tspan> | <tspan font-family="KaTeX_Math" font-style="italic">S</tspan>)</text>
+  <rect x="100" y="8" width="200" height="108" rx="10" fill="none" stroke="#1b1f24" stroke-width="2"/>
+  <text x="294" y="110" text-anchor="end" font-size="15"><tspan font-family="KaTeX_Math" font-style="italic">i</tspan> &#8712; [<tspan font-family="KaTeX_Math" font-style="italic">N</tspan>]</text>
+  <circle cx="30" cy="58" r="26" fill="#fff" stroke="#1b1f24" stroke-width="2"/>
+  <text x="30" y="67" text-anchor="middle" font-size="27" font-family="KaTeX_Math" font-style="italic">&#952;</text>
+  <circle cx="140" cy="58" r="32" fill="#fff" stroke="#1b1f24" stroke-width="2"/>
+  <text x="138" y="67" text-anchor="middle" font-size="28" font-family="KaTeX_Math" font-style="italic">S<tspan font-size="18" dy="7">i</tspan></text>
+  <circle cx="260" cy="58" r="32" fill="#cfd4da" stroke="#1b1f24" stroke-width="2"/>
+  <text x="258" y="67" text-anchor="middle" font-size="28" font-family="KaTeX_Math" font-style="italic">X<tspan font-size="18" dy="7">i</tspan></text>
+  <line x1="58" y1="58" x2="106" y2="58" stroke="#1b1f24" stroke-width="2" marker-end="url(#pah2)"/>
+  <line x1="174" y1="58" x2="226" y2="58" stroke="#1b1f24" stroke-width="2" marker-end="url(#pah2)"/>
 </svg>
 
-<span class="small">latent state $S_i$ (unshaded) generates the observation $X_i$ (shaded)</span>
+<span class="emit"><img src="assets/state-graph.png"><span class="arw">&#8594;</span><img src="assets/observation-curve.png"></span>
+
+</div>
 
 </div>
 </div>
 
-<div class="cols">
-<div class="key">
+<div class="problem">
 
-**① Learning.** Find $\theta$ maximizing the data likelihood
-$\displaystyle\Pr(X_{1:N}\mid\theta)=\prod_i \Pr(X_i\mid\theta)$
+**Problem 1 (Learning).** *Given (i) $X_{1:N}$ and (ii) $\Pr(X\mid S)$, find $\theta$ maximizing ${\Pr(X_{1:N}\mid\theta)=\prod_i \Pr(X_i\mid\theta})$, where $\Pr(X_i\mid\theta)=\sum_{S}\Pr(X_i\mid S)\,\Pr(S\mid\theta)$*
 
 </div>
-<div class="key">
 
-**② Inference.** For each $X_i$, recover
-$\hat S_i=\arg\max_S \Pr(X_i\mid S)\,\Pr(S\mid\theta)$
+<div class="problem">
 
-</div>
+**Problem 2 (Inference).** *Given (i) $X_{1:N}$, (ii) $\Pr(X\mid S)$, and (iii) $\theta$, find $\hat{S}_{1:N}$, where ${\hat S_i=\arg\max_S \Pr(X_i\mid S)\,\Pr(S\mid\theta)}$*
+
 </div>
 
 <!--
@@ -256,6 +349,7 @@ them; (2) INFER the best state per observation. Everything today serves these tw
 | Approach | Problem |
 |---|---|
 | **Expectation–Maximization** | E-step expectation over $\mathcal S$ is **intractable** when $\mathcal S$ is combinatorial |
+| **Variational inference** | maximizes an *ELBO* bound, not the likelihood — needs a **tractable posterior family** over combinatorial $\mathcal S$ |
 | **Variational autoencoders** | learn *artificial* continuous latents — **not** the mechanistic $S$ you want |
 | **Local search** ($\arg\max_S \Pr(X_i\mid S)$) | ignores the **shared** model $\Pr(S\mid\theta)$ across observations |
 | **Naive policy gradient** | collapses to the single **highest-reward** state |
@@ -267,6 +361,8 @@ them; (2) INFER the best state per observation. Everything today serves these tw
 
 <!--
 EM: exact expectation needs summing over all states — only works for special structure (HMMs).
+VI: optimizes a lower bound (ELBO) instead of the true likelihood, and you must hand-design a
+tractable approximate posterior q(S) over a combinatorial space — exactly what's hard here.
 VAE: great generative models, but the latent lives in a made-up ℝ^d, not your isoform space.
 Local search: per-observation, no sharing of statistical strength.
 Naive PG / GFlowNet are the closest cousins to what we do — and we'll see exactly why they fail.
