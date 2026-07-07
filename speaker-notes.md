@@ -8,6 +8,8 @@ One block per slide. → NOTEBOOK slides are the live-demo hand-offs.
 
 ### 1. GReinSS
 
+GReinSS tutorial — NCI Spring School on Algorithmic Cancer Biology Speaker notes are in HTML comments like this one. Live-demo hand-offs are marked "→ NOTEBOOK".
+
 Hi everyone. Today: a hands-on tutorial on GReinSS — a method for a problem that shows up all over algorithmic cancer biology: inferring hidden combinatorial states from noisy, indirect measurements. We'll cover the idea, the one theorem that makes it work, and then train it live on your laptop. Goal: you leave able to apply it to your own problem.
 
 ### 2. A recurring statistical inference problem in computational biology
@@ -26,29 +28,35 @@ EM: exact expectation needs summing over all states — only works for special s
 
 *(no notes)*
 
-### 6. Generate states as trajectories
+### 6. Primer on reinforcement learning (RL)
 
-This is the RL move: represent a big discrete object as a path of small decisions. The policy is a neural net that at each step picks the next action. Any structure you can grow incrementally fits. We never enumerate S — we sample trajectories and average.
+The generic RL mental model, deliberately provider-neutral and episodic: the policy builds an object action-by-action (a trajectory), a scalar reward scores the finished trajectory, and the goal is to maximize EXPECTED reward. Trace the three arrows aloud: sample τ from the policy → score it → policy-gradient nudge, then repeat. The one identity they must take away is REINFORCE: you can differentiate an expectation over samples by weighting each trajectory's log-prob gradient by its reward — no gradient through the reward itself. Everything on the next two content slides is this loop with a specific reward plugged in. Contrast up top with supervised learning to anchor the audience.
 
-### 7. The one equation that matters
+### 7. GReinSS: <u>G</u>enerative <u>Rein</u>forcement Learning of <u>S</u>tructured <u>S</u>tates
 
-This is the whole method in one line. The numerator Pr(Xi|τ) is the usual "how well does this trajectory explain observation i". The DENOMINATOR Pr(Xi|θ) is the current model's total probability of that observation — it rescales each observation's contribution. Gradient is taken ONLY through log Pr(τ|θ); the reward is treated as a constant each step, then recomputed after the update. That's the "dynamic" part.
+> **Key question:** Can we adapt reward function $r(\tau)$ to optimize data likelihood $\Pr(X_{1:N}\mid \theta)$?
 
-### 8. Why the denominator? (intuition)
+Same diagram, re-labeled — say it out loud: "nothing about the machinery changes." Actions grow a discrete structure; the trajectory's terminal state IS the object we care about S(τ); the policy is a neural net; the reward (orange, highlighted) is the only novel piece and the objective is now the data log-likelihood, not a hand-picked reward. This is the pivot: GReinSS = policy gradient where the reward is engineered so that maximizing expected reward provably equals maximum-likelihood learning. Hold the suspense on the exact reward formula — that's the very next slide (the denominator is the whole trick).
 
-Key teaching moment. Without rescaling, τ1 has the highest raw reward, so naive PG puts ALL mass on it — but then X2 has zero probability and the joint likelihood is ZERO. With the denominator, as soon as τ1 gets probability its reward drops (it's dividing by its own success), so the policy is pushed to also cover X2. Equilibrium = the likelihood optimum. Note τ3 dies: it's dominated by τ2 for explaining X2. The method finds the RIGHT support.
+### 8. Dynamically-changing rewards
 
-### 9. The reward is dynamic — that's the whole trick
+The method in one line: what we optimize (the log-likelihood gradient) equals how we optimize it (a policy gradient with the dynamically rescaled reward). The numerator Pr(Xi|τ) is "how well does this trajectory explain observation i"; the DENOMINATOR Pr(Xi|θ) is the model's total probability of Xi, which rescales each observation's contribution. Theorem 1: this policy gradient is unbiased for the log-likelihood gradient — gradient taken ONLY through log Pr(τ|θ), the reward treated as constant each step.
 
-Payoff of the title. The numerator is per-trajectory fit; the denominator is the current model's total probability of Xi — it shifts as θ learns, so we can't precompute it. Each iteration we sample trajectories and average Pr(Xi|τ) to estimate it. As a state gets covered, its denominator grows and its reward shrinks — automatic load balancing.
+### 9. GReinSS training loop
 
-### 10. The training loop
+The training loop IS the RL cycle from the primer, with our reward plugged in: sample τ from the policy → score with Pr(Xi|τ) → policy-gradient update θ. The one addition over vanilla RL is on the loop-back leg: the denominator Pr(Xi|θ) shifts as θ learns, so each iteration we re-estimate it by sampling (average Pr(Xi|τ) over sampled trajectories). As a state gets covered its denominator grows and its reward shrinks — automatic load balancing. API surface: the user supplies only (a) a generator for S and (b) the likelihood Pr(X|S). Everything else — reward machinery, sampling, gradient — is provided. That's exactly what the notebook will show: write those two functions and call train().
 
-Emphasize the API surface: the user supplies (a) a generator and (b) Pr(X|S). That's it. The reward machinery, sampling, and gradient are provided. This is exactly what the notebook will show — you'll write those two functions and call train().
-
-### 11. Off-policy learning (when on-policy is too slow)
+### 10. Off-policy learning (when on-policy is too slow)
 
 Practical must-have for hard problems. Instead of blindly sampling from the policy, we tilt sampling toward states that actually fit each observation — provably the best proposal. In our biology applications this is where domain knowledge enters: a fast classical method proposes candidate states, and GReinSS refines the distribution over them. Keep this slide brief unless the audience asks.
+
+### 11. Intuition behind dynamic rewards — why the denominator Pr(X_imid theta)?
+
+Policy $\theta\equiv\Pr(\tau\mid\theta)$ over $\tau_1,\tau_2,\tau_3$ ($\tau_j$ builds $S_j$); marginal $\Pr(X_i\mid\theta)=\sum_\tau\Pr(\tau\mid\theta)\,\Pr(X_i\mid\tau)$.
+
+> Reward **shrinks as it succeeds** ⇒ the policy covers *every* observation.
+
+θ IS the policy: the bars plot Pr(τ|θ), and each panel is the DIFFERENT θ* that its reward selects. The values are exact optima, not eyeballed. Assume one X1 and one X2. LEFT (raw reward = Pr(Xi|τ)): per-trajectory reward (.5,.3,.2); maximizing E_τ[r] is linear in the policy, so all mass goes to the top, τ1 → θ*=(1,0,0). Then Pr(X2|θ)=0 and the joint L=0. RIGHT (rescaled): Thm 1 makes this maximize the data likelihood L = Pr(X1|θ)·Pr(X2|θ) = (.5 p1)(.3 p2 + .2 p3). τ3 is dominated by τ2 for X2 (.2<.3) so p3=0; then L = .15 p1 p2 with p1+p2=1, maximized at p1=p2=.5 → θ*=(.5,.5,0), L=.25×.15=.0375 (the global optimum). Punchline: the denominator = automatic load-balancing across observations.
 
 ### 12. The scoreboard — who actually maximizes the likelihood?
 

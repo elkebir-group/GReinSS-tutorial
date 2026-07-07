@@ -292,8 +292,10 @@ Naive PG / GFlowNet are the closest cousins to what we do — and we'll see exac
 > **Key question:** What actions should an agent take to maximize a reward signal? 
 
 <style scoped>
-.cols { grid-template-columns: 2.15fr 1fr; }
-table { table-layout: fixed; width: 435px; margin: 6px 0; font-size: 20px; }
+.cols { grid-template-columns: 2.15fr 1fr; margin: 26px 0; }
+blockquote { margin-bottom: 6px; }
+.key { margin-top: 6px; }
+table { table-layout: fixed; width: 435px; margin: 0; font-size: 20px; }
 th, td { box-sizing: border-box; }
 th:nth-child(1), td:nth-child(1) { width: 150px; }
 th:nth-child(2), td:nth-child(2) { width: 285px; }
@@ -396,8 +398,10 @@ specific reward plugged in. Contrast up top with supervised learning to anchor t
 <!--> **Key question:** Can we adapt reward function $r(\tau)$ to optimize data likelihood $\Pr(X_{1:N}\mid \theta)$?-->
 
 <style scoped>
-.cols { grid-template-columns: 700px 1fr; }
-table { table-layout: fixed; width: 685px; margin: 6px 0; font-size: 20px; }
+.cols { grid-template-columns: 700px 1fr; margin: 26px 0; }
+blockquote { margin-bottom: 6px; }
+.key { margin-top: 6px; }
+table { table-layout: fixed; width: 685px; margin: 0; font-size: 20px; }
 th, td { box-sizing: border-box; padding: 7px 8px; }
 th:nth-child(1), td:nth-child(1) { width: 150px; }
 th:nth-child(2), td:nth-child(2) { width: 285px; }
@@ -526,12 +530,16 @@ reward formula — that's the very next slide (the denominator is the whole tric
 
 ## Dynamically-changing rewards
 
-Train with a policy gradient using the **dynamically rescaled reward** $\;r(\tau)=\sum_{i=1}^{N}\dfrac{\Pr(X_i\mid\tau)}{\Pr(X_i\mid\theta)}$.
+> Train with a policy gradient using the **dynamically rescaled reward** ${r(\tau)=\sum_{i=1}^{N}\Pr(X_i\mid\tau)/\Pr(X_i\mid\theta)}$
+
+<style scoped>
+.eqsplit { justify-content: center; gap: 22px; margin: 30px 0; }
+</style>
 
 <div class="eqsplit">
 <div class="eqbox gbox">
 
-$$\nabla_\theta\log\Pr(X_{1:N}\mid\theta)$$
+$$\nabla_\theta\underbrace{\log\Pr(X_{1:N}\mid\theta)}_{\text{log-likelihood}}$$
 
 <span class="lbl">what we optimize</span>
 
@@ -539,7 +547,7 @@ $$\nabla_\theta\log\Pr(X_{1:N}\mid\theta)$$
 <div class="eq">=</div>
 <div class="eqbox rbox">
 
-$$\mathbb{E}_\tau\!\Big[r(\tau)\,\nabla_\theta\log\Pr(\tau\mid\theta)\Big]$$
+$$\underbrace{\mathbb{E}_\tau\!\Big[r(\tau)\,\nabla_\theta\log\Pr(\tau\mid\theta)\Big]}_{\text{policy gradient}}$$
 
 <span class="lbl">how we optimize it</span>
 
@@ -548,125 +556,105 @@ $$\mathbb{E}_\tau\!\Big[r(\tau)\,\nabla_\theta\log\Pr(\tau\mid\theta)\Big]$$
 
 <div class="theorem">
 
-**Theorem 1 (Unbiased policy gradient).** *With the dynamically changing reward $r(\tau)=\sum_{i=1}^{N}\Pr(X_i\mid\tau)/\Pr(X_i\mid\theta)$, the policy gradient $\mathbb{E}_\tau\!\big[r(\tau)\,\nabla_\theta\log\Pr(\tau\mid\theta)\big]$ is an unbiased estimator of $\nabla_\theta\log\Pr(X_{1:N}\mid\theta)$, the gradient of the log-likelihood objective.*
+**Theorem 1 (Unbiased policy gradient).** *With the dynamically changing reward $r(\tau)=\sum_{i=1}^{N}\Pr(X_i\mid\tau)/\Pr(X_i\mid\theta)$, the policy gradient $\mathbb{E}_\tau\!\big[r(\tau)\,\nabla_\theta\log\Pr(\tau\mid\theta)\big]$ is an unbiased estimator of $\nabla_\theta\log\Pr(X_{1:N}\mid\theta)$.*
 
 </div>
 
-> So standard policy-gradient ascent with this reward = **maximum-likelihood** learning of $\Pr(S\mid\theta)$.
-
 <!--
-This is the whole method in one line. The numerator Pr(Xi|τ) is the usual "how well does
-this trajectory explain observation i". The DENOMINATOR Pr(Xi|θ) is the current model's
-total probability of that observation — it rescales each observation's contribution.
-Gradient is taken ONLY through log Pr(τ|θ); the reward is treated as a constant each step,
-then recomputed after the update. That's the "dynamic" part.
+The method in one line: what we optimize (the log-likelihood gradient) equals how we optimize
+it (a policy gradient with the dynamically rescaled reward). The numerator Pr(Xi|τ) is "how
+well does this trajectory explain observation i"; the DENOMINATOR Pr(Xi|θ) is the model's total
+probability of Xi, which rescales each observation's contribution. Theorem 1: this policy
+gradient is unbiased for the log-likelihood gradient — gradient taken ONLY through log Pr(τ|θ),
+the reward treated as constant each step.
 -->
 
 ---
 
-## Why the denominator? (intuition)
+## GReinSS training loop
 
-The rescaling rewards a trajectory for its **proportional contribution** to $\Pr(X_i\mid\theta)$ — not its raw probability. This makes the policy **spread** over the states the data needs, instead of collapsing to one.
+<style scoped>
+.cols { align-items: center; margin: 8px 0; }
+.key { padding: 8px 20px; }
+.key .katex-display { margin: 5px 0; }
+ol { font-size: 21px; margin: 6px 0; }
+ol li { margin: 5px 0; }
+.box { padding: 10px 18px; }
+</style>
 
-<div class="cols">
-<div>
+<div class="cols" style="grid-template-columns: 1.8fr 1fr;">
+<div class="key">
 
-![w:560](assets/toy-1.png)
+The **sample → score → update** cycle of RL, run with a reward that changes as $\theta$ learns:
 
-</div>
-<div>
 
-**Toy:** 3 states, 2 observations.
-$\Pr(X_1|S_1)=.5,\ \Pr(X_2|S_2)=.3,\ \Pr(X_2|S_3)=.2$
 
-**Naive PG** → chases the max reward ($\tau_1$):
-$\Pr(\tau_1)=1 \Rightarrow \Pr(X_2\mid\theta)=0$
-$\Rightarrow \Pr(X_{1:N}\mid\theta)=\mathbf 0$ ❌
+$$r(\tau)=\sum_{i=1}^{N}\frac{\Pr(X_i\mid\tau)}{\boxed{\Pr(X_i\mid\theta)}}\qquad\Pr(X_i\mid\theta)=\mathbb{E}_{\tau}\big[\Pr(X_i\mid\tau)\big]$$
 
-**GReinSS** → rewards balance out:
-$\Pr(\tau_1)=\Pr(\tau_2)=0.5,\ \Pr(\tau_3)=0$
-$\Rightarrow \Pr(X_{1:N}\mid\theta)=0.0375$ ✓ *(optimal)*
-
-</div>
-</div>
-
-<!--
-Key teaching moment. Without rescaling, τ1 has the highest raw reward, so naive PG puts
-ALL mass on it — but then X2 has zero probability and the joint likelihood is ZERO.
-With the denominator, as soon as τ1 gets probability its reward drops (it's dividing by its
-own success), so the policy is pushed to also cover X2. Equilibrium = the likelihood optimum.
-Note τ3 dies: it's dominated by τ2 for explaining X2. The method finds the RIGHT support.
--->
-
----
-
-## The reward is *dynamic* — that's the whole trick
-
-The denominator $\Pr(X_i\mid\theta)$ is **not known up front** and **changes every step** as $\theta$ updates — so we **re-estimate it by sampling** each iteration.
-
-<div class="eqsplit">
-<div class="eqbox rbox">
-
-$$r(\tau)=\sum_{i=1}^{N}\frac{\Pr(X_i\mid\tau)}{\boxed{\Pr(X_i\mid\theta)}}$$
-
-<span class="lbl">moves during training</span>
+**Dynamic reward** — the boxed denominator is **re-estimated by sampling** each iteration.
 
 </div>
-<div class="eq">→</div>
-<div class="eqbox gbox">
+<div class="center">
 
-$$\Pr(X_i\mid\theta)=\mathbb{E}_{\tau\sim\Pr(\tau\mid\theta)}\big[\Pr(X_i\mid\tau)\big]$$
-
-<span class="lbl">estimated by sampling</span>
+<svg viewBox="0 0 300 250" width="340" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
+  <defs>
+    <marker id="rlah2" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#8a94a0"/>
+    </marker>
+  </defs>
+  <line x1="169.5" y1="78" x2="228.5" y2="170" stroke="#8a94a0" stroke-width="2.5" marker-end="url(#rlah2)"/>
+  <line x1="212" y1="196" x2="88" y2="196" stroke="#8a94a0" stroke-width="2.5" marker-end="url(#rlah2)"/>
+  <line x1="71.5" y1="170" x2="130.5" y2="78" stroke="#8a94a0" stroke-width="2.5" marker-end="url(#rlah2)"/>
+  <text x="212" y="120" font-size="14" fill="#FF5F05" font-style="italic">sample</text>
+  <text x="150" y="189" text-anchor="middle" font-size="14" fill="#FF5F05" font-style="italic">score</text>
+  <text x="90" y="120" text-anchor="end" font-size="14" fill="#FF5F05" font-style="italic">update &#952;</text>
+  <circle cx="150" cy="46" r="36" fill="#f4f6f9" stroke="#13294B" stroke-width="2.5"/>
+  <text x="150" y="42" text-anchor="middle" font-size="13" font-weight="bold" fill="#13294B">Policy</text>
+  <text x="150" y="63" text-anchor="middle" font-size="18" font-style="italic" fill="#1b1f24">&#960;<tspan font-size="12" dy="4">&#952;</tspan></text>
+  <circle cx="250" cy="196" r="36" fill="#f4f6f9" stroke="#13294B" stroke-width="2.5"/>
+  <text x="250" y="192" text-anchor="middle" font-size="13" font-weight="bold" fill="#13294B">Trajectory</text>
+  <text x="250" y="214" text-anchor="middle" font-size="18" font-style="italic" fill="#1b1f24">&#964;</text>
+  <circle cx="50" cy="196" r="36" fill="#f4f6f9" stroke="#13294B" stroke-width="2.5"/>
+  <text x="50" y="192" text-anchor="middle" font-size="13" font-weight="bold" fill="#13294B">Reward</text>
+  <text x="50" y="214" text-anchor="middle" font-size="16" font-style="italic" fill="#1b1f24">r(&#964;)</text>
+</svg>
 
 </div>
 </div>
 
-> Recomputed after every update, the moving denominator continuously **rebalances** which states the policy must cover. This is the *"dynamic"* in **dynamic policy gradients**.
-
-<!--
-Payoff of the title. The numerator is per-trajectory fit; the denominator is the
-current model's total probability of Xi — it shifts as θ learns, so we can't precompute
-it. Each iteration we sample trajectories and average Pr(Xi|τ) to estimate it. As a
-state gets covered, its denominator grows and its reward shrinks — automatic load balancing.
--->
-
----
-
-## The training loop
-
-<div class="cols">
+<div class="cols" style="grid-template-columns: 1.35fr 1fr;">
 <div>
 
 **Repeat until convergence:**
 
-1. **Sample** trajectories $\tau\sim\Pr(\tau\mid\theta)$
-2. **Score** each with $\Pr(X_i\mid\tau)$
-3. **Rewards** $r(\tau)=\sum_i \Pr(X_i\mid\tau)/\Pr(X_i\mid\theta)$
-4. **Policy-gradient step** on $\theta$
-5. **Recompute** $\Pr(X_i\mid\theta)$ → new rewards
+1. **Sample** a batch $\tau_1,\dots,\tau_M\sim\Pr(\tau\mid\theta)$
+2. **Score** each: $\Pr(X_i\mid\tau_j)$
+3. **Estimate** $\Pr(X_i\mid\theta)\approx\frac1M\sum_j\Pr(X_i\mid\tau_j)$ &nbsp;<span class="small">*(same batch)*</span>
+4. **Reward** $r(\tau_j)=\sum_i\Pr(X_i\mid\tau_j)/\Pr(X_i\mid\theta)$
+5. **Policy-gradient** step along $\mathbb{E}_\tau\big[r(\tau)\,\nabla_\theta\log\Pr(\tau\mid\theta)\big]$
 
 </div>
 <div class="box">
 
-**You provide only two things:**
+**You supply only two things:**
 
-- a way to **generate** $S$ (grow it action-by-action)
+- a **generator** for $S$ (action-by-action)
 - the likelihood **$\Pr(X\mid S)$**
 
 Everything else is generic.
-
-<br>
-
-<span class="small">Mini-batching over observations keeps it unbiased and scalable (Thm.).</span>
 
 </div>
 </div>
 
 <!--
-Emphasize the API surface: the user supplies (a) a generator and (b) Pr(X|S). That's it.
-The reward machinery, sampling, and gradient are provided. This is exactly what the
-notebook will show — you'll write those two functions and call train().
+The training loop IS the RL cycle from the primer, with our reward plugged in: sample τ from
+the policy → score with Pr(Xi|τ) → policy-gradient update θ. The one addition over vanilla RL
+is on the loop-back leg: the denominator Pr(Xi|θ) shifts as θ learns, so each iteration we
+re-estimate it by sampling (average Pr(Xi|τ) over sampled trajectories). As a state gets
+covered its denominator grows and its reward shrinks — automatic load balancing.
+API surface: the user supplies only (a) a generator for S and (b) the likelihood Pr(X|S).
+Everything else — reward machinery, sampling, gradient — is provided. That's exactly what the
+notebook will show: write those two functions and call train().
 -->
 
 ---
@@ -693,6 +681,142 @@ tilt sampling toward states that actually fit each observation — provably the 
 In our biology applications this is where domain knowledge enters: a fast classical method
 proposes candidate states, and GReinSS refines the distribution over them.
 Keep this slide brief unless the audience asks.
+-->
+
+---
+
+## Intuition behind dynamic rewards — why the denominator $\Pr(X_i\mid \theta)$?
+
+<style scoped>
+.setup { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 22px; margin: 2px 0 6px; }
+.setup table { margin: 0; font-size: 22px; border-collapse: collapse; }
+.setup td, .setup th { border: 1px solid #d0d7e0; padding: 9px 14px; text-align: center; }
+.setup th { background: #13294B; color: #fff; }
+.tcap { display: block; text-align: center; font-size: 17px; color: #5b6672; margin-bottom: 3px; }
+.cols { align-items: stretch; gap: 34px; margin: 2px 0; }
+.panel { padding: 6px 14px 8px; border-radius: 12px; border: 2px solid; }
+.panel.bad { background: #fdecea; border-color: #e0a99f; }
+.panel.good { background: #eaf6ec; border-color: #a9d5b4; }
+.chip { text-align: center; font-size: 19px; padding: 4px 10px; border-radius: 8px; margin-top: 6px; }
+.chip.bad { background: #f6cec7; color: #a82c15; border: 1px solid #dd9e93; }
+.chip.good { background: #c9e7cd; color: #1c6e2f; border: 1px solid #9ccfa6; }
+.chip p { margin: 0; }
+.rhead { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+.rsub { display: block; font-size: 15px; color: #5b6672; margin-bottom: 2px; min-height: 20px; }
+.rnote { font-size: 16px; margin-top: 2px; }
+</style>
+
+<div class="setup">
+<div>
+
+| $\Pr(X \mid S)$ | $S_1$ | $S_2$ | $S_3$ |
+|---|:--:|:--:|:--:|
+| $X_1$ | $.5$ | | |
+| $X_2$ | | $.3$ | $.2$ |
+
+</div>
+<div>
+
+**Example:** Two measurements $X_1$ and $X_2$. States $\mathcal{S} = \{S_1, S_2, S_3\}$. 
+
+**Parameters:** $\theta \equiv (\Pr(S_1\mid\theta), \Pr(S_2\mid\theta), \Pr(S_3\mid\theta))$ 
+<!--Policy $\theta\equiv\Pr(\tau\mid\theta)$ over $\tau_1,\tau_2,\tau_3$ ($\tau_j$ builds $S_j$); marginal $\Pr(X_i\mid\theta)=\sum_\tau\Pr(\tau\mid\theta)\,\Pr(X_i\mid\tau)$.-->
+
+**Objective:** $\max_\theta \Pr(X_1, X_2 \mid \theta) = \max_\theta \mathbb{E}_\tau[r(\tau)]$
+
+</div>
+</div>
+
+
+<div class="cols">
+<div class="center panel bad">
+
+<span class="rhead">Fixed rewards 
+$r(\tau)=\Pr(X_i\mid\tau)$</span>
+
+<svg viewBox="0 0 280 210" width="190" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
+  <line x1="46" y1="18" x2="46" y2="158" stroke="#c2cbd6" stroke-width="1.5"/>
+  <line x1="46" y1="158" x2="270" y2="158" stroke="#c2cbd6" stroke-width="1.5"/>
+  <text x="38" y="26" text-anchor="end" font-size="20" font-family="KaTeX_Main" fill="#8a94a0">1</text>
+  <text x="38" y="164" text-anchor="end" font-size="20" font-family="KaTeX_Main" fill="#8a94a0">0</text>
+  <text x="18" y="92" transform="rotate(-90 18 92)" text-anchor="middle" font-size="21" font-family="KaTeX_Main" fill="#5b6672">Pr(<tspan font-family="KaTeX_Math" font-style="italic">&#964;</tspan>&#8202;|&#8202;<tspan font-family="KaTeX_Math" font-style="italic">&#952;</tspan>)</text>
+  <rect x="53" y="26" width="50" height="132" rx="3" fill="#13294B"/>
+  <text x="78" y="16" text-anchor="middle" font-size="22" font-family="KaTeX_Main" fill="#1b1f24">1.0</text>
+  <line x1="133" y1="158" x2="183" y2="158" stroke="#8a94a0" stroke-width="3"/>
+  <line x1="213" y1="158" x2="263" y2="158" stroke="#8a94a0" stroke-width="3"/>
+  <text x="78" y="184" text-anchor="middle" font-size="26" font-family="KaTeX_Math" font-style="italic" fill="#1b1f24">&#964;<tspan font-family="KaTeX_Main" font-style="normal" font-size="17" dy="6">1</tspan></text>
+  <text x="158" y="184" text-anchor="middle" font-size="26" font-family="KaTeX_Math" font-style="italic" fill="#1b1f24">&#964;<tspan font-family="KaTeX_Main" font-style="normal" font-size="17" dy="6">2</tspan></text>
+  <text x="238" y="184" text-anchor="middle" font-size="26" font-family="KaTeX_Math" font-style="italic" fill="#1b1f24">&#964;<tspan font-family="KaTeX_Main" font-style="normal" font-size="17" dy="6">3</tspan></text>
+  <text x="78" y="204" text-anchor="middle" font-size="16" fill="#8a94a0">explains <tspan font-family="KaTeX_Math" font-style="italic">X</tspan><tspan font-family="KaTeX_Main" font-size="11" dy="2">1</tspan></text>
+  <text x="158" y="204" text-anchor="middle" font-size="16" fill="#8a94a0"><tspan font-family="KaTeX_Math" font-style="italic">X</tspan><tspan font-family="KaTeX_Main" font-size="11" dy="2">2</tspan></text>
+  <text x="238" y="204" text-anchor="middle" font-size="16" fill="#8a94a0"><tspan font-family="KaTeX_Math" font-style="italic">X</tspan><tspan font-family="KaTeX_Main" font-size="11" dy="2">2</tspan></text>
+</svg>
+
+<div class="rnote">
+
+$\theta^\star=(1,0,0)$:  $\Pr(X_1\mid\theta)=.5,\ \Pr(X_2\mid\theta)=0$
+
+</div>
+
+<div class="chip bad">
+
+$\mathbb{E}_\tau[r]$ is linear in the policy ⇒ all mass on the best, $\tau_1$
+$\Pr(X_1,X_2\mid\theta)=.5\times 0=\mathbf 0$ ✗
+
+</div>
+
+</div>
+<div class="center panel good">
+
+<span class="rhead">Dynamic rewards 
+$r(\tau)=\Pr(X_i\mid\tau)/\Pr(X_i\mid\theta)$</span>
+
+<svg viewBox="0 0 280 210" width="190" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
+  <line x1="46" y1="18" x2="46" y2="158" stroke="#c2cbd6" stroke-width="1.5"/>
+  <line x1="46" y1="158" x2="270" y2="158" stroke="#c2cbd6" stroke-width="1.5"/>
+  <text x="38" y="26" text-anchor="end" font-size="20" font-family="KaTeX_Main" fill="#8a94a0">1</text>
+  <text x="38" y="164" text-anchor="end" font-size="20" font-family="KaTeX_Main" fill="#8a94a0">0</text>
+  <text x="18" y="92" transform="rotate(-90 18 92)" text-anchor="middle" font-size="21" font-family="KaTeX_Main" fill="#5b6672">Pr(<tspan font-family="KaTeX_Math" font-style="italic">&#964;</tspan>&#8202;|&#8202;<tspan font-family="KaTeX_Math" font-style="italic">&#952;</tspan>)</text>
+  <rect x="53" y="92" width="50" height="66" rx="3" fill="#13294B"/>
+  <text x="78" y="82" text-anchor="middle" font-size="22" font-family="KaTeX_Main" fill="#1b1f24">0.5</text>
+  <rect x="133" y="92" width="50" height="66" rx="3" fill="#13294B"/>
+  <text x="158" y="82" text-anchor="middle" font-size="22" font-family="KaTeX_Main" fill="#1b1f24">0.5</text>
+  <line x1="213" y1="158" x2="263" y2="158" stroke="#8a94a0" stroke-width="3"/>
+  <text x="78" y="184" text-anchor="middle" font-size="26" font-family="KaTeX_Math" font-style="italic" fill="#1b1f24">&#964;<tspan font-family="KaTeX_Main" font-style="normal" font-size="17" dy="6">1</tspan></text>
+  <text x="158" y="184" text-anchor="middle" font-size="26" font-family="KaTeX_Math" font-style="italic" fill="#1b1f24">&#964;<tspan font-family="KaTeX_Main" font-style="normal" font-size="17" dy="6">2</tspan></text>
+  <text x="238" y="184" text-anchor="middle" font-size="26" font-family="KaTeX_Math" font-style="italic" fill="#1b1f24">&#964;<tspan font-family="KaTeX_Main" font-style="normal" font-size="17" dy="6">3</tspan></text>
+  <text x="78" y="204" text-anchor="middle" font-size="16" fill="#8a94a0">explains <tspan font-family="KaTeX_Math" font-style="italic">X</tspan><tspan font-family="KaTeX_Main" font-size="11" dy="2">1</tspan></text>
+  <text x="158" y="204" text-anchor="middle" font-size="16" fill="#8a94a0"><tspan font-family="KaTeX_Math" font-style="italic">X</tspan><tspan font-family="KaTeX_Main" font-size="11" dy="2">2</tspan></text>
+  <text x="238" y="204" text-anchor="middle" font-size="16" fill="#8a94a0"><tspan font-family="KaTeX_Math" font-style="italic">X</tspan><tspan font-family="KaTeX_Main" font-size="11" dy="2">2</tspan></text>
+</svg>
+
+<div class="rnote">
+
+$\theta^\star=(.5,.5,0)$:  $\Pr(X_1\mid\theta)=.25,\ \Pr(X_2\mid\theta)=.15$
+
+</div>
+
+<div class="chip good">
+
+$\max\mathbb{E}_\tau[r]=\max \Pr(X_1,X_2\mid\theta)$ ⇒ balances $\tau_1,\tau_2$
+$\Pr(X_1,X_2\mid\theta)=.25\times.15=0.0375$ ✓
+
+</div>
+
+</div>
+</div>
+
+<!--> Reward **shrinks as it succeeds** ⇒ the policy covers *every* observation.-->
+
+<!--
+θ IS the policy: the bars plot Pr(τ|θ), and each panel is the DIFFERENT θ* that its reward
+selects. The values are exact optima, not eyeballed. Assume one X1 and one X2.
+LEFT (raw reward = Pr(Xi|τ)): per-trajectory reward (.5,.3,.2); maximizing E_τ[r] is linear in
+the policy, so all mass goes to the top, τ1 → θ*=(1,0,0). Then Pr(X2|θ)=0 and the joint L=0.
+RIGHT (rescaled): Thm 1 makes this maximize the data likelihood L = Pr(X1|θ)·Pr(X2|θ) =
+(.5 p1)(.3 p2 + .2 p3). τ3 is dominated by τ2 for X2 (.2<.3) so p3=0; then L = .15 p1 p2 with
+p1+p2=1, maximized at p1=p2=.5 → θ*=(.5,.5,0), L=.25×.15=.0375 (the global optimum).
+Punchline: the denominator = automatic load-balancing across observations.
 -->
 
 ---
