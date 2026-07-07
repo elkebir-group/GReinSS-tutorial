@@ -44,8 +44,8 @@ Goal: you leave able to apply it to your own problem.
 ## A recurring statistical inference problem in computational biology
 
 <style scoped>
-.setup { margin-bottom: 18px; }
-blockquote { margin: 18px 0; }
+.setup { margin-bottom: 0; }
+blockquote { margin: 24px 0; }
 </style>
 
 <div class="cols3 setup">
@@ -253,37 +253,47 @@ them; (2) INFER the best state per observation. Everything today serves these tw
 
 ## Why the usual tools struggle
 
-| Approach | Problem |
-|---|---|
-| **Expectation–Maximization** | E-step expectation over $\mathcal S$ is **intractable** when $\mathcal S$ is combinatorial |
-| **Variational inference** | maximizes an *ELBO* bound, not the likelihood — needs a **tractable posterior family** over combinatorial $\mathcal S$ |
-| **Variational autoencoders** | learn *artificial* continuous latents — **not** the mechanistic $S$ you want |
-| **Local search** ($\arg\max_S \Pr(X_i\mid S)$) | ignores the **shared** model $\Pr(S\mid\theta)$ across observations |
-| **Naive policy gradient** | collapses to the single **highest-reward** state |
-| **GFlowNets** | need **known terminal rewards**, not a likelihood to maximize |
+<style scoped>
+table { table-layout: fixed; width: 1148px; font-size: 22px; border-collapse: collapse; margin: 16px auto 0; }
+th, td { box-sizing: border-box; }
+th:nth-child(1), td:nth-child(1) { width: 168px; }
+th:nth-child(2), td:nth-child(2) { width: 300px; }
+th:nth-child(3), td:nth-child(3) { width: 680px; }
+td.fam { background: var(--panel); color: var(--ill-blue); font-weight: 700; text-align: center; vertical-align: middle; font-size: 21px; }
+tbody tr.grp td { border-top: 3px solid #b9c3d1; }
+td.m { font-weight: 700; color: var(--ill-blue); vertical-align: middle; }
+td.d { vertical-align: middle; }
+blockquote { margin-top: 24px; }
+</style>
 
-<br>
+<table>
+<thead>
+<tr><th>Family</th><th>Method</th><th>Why it struggles</th></tr>
+</thead>
+<tbody>
+<tr class="grp"><td class="fam">Exact<br>inference</td><td class="m">Expectation–Maximization</td><td class="d">E-step exact only for <strong>special structure</strong> (e.g. <strong>HMMs</strong>) — <strong>intractable</strong> for a combinatorial state space</td></tr>
+<tr class="grp"><td class="fam" rowspan="2">Variational</td><td class="m">Variational inference</td><td class="d">maximizes an <em>ELBO</em> bound, not the likelihood — needs a <strong>tractable posterior</strong> over combinatorial states</td></tr>
+<tr><td class="m">Variational autoencoders</td><td class="d">learn <em>artificial</em> continuous latents — <strong>not</strong> the mechanistic state you want</td></tr>
+<tr class="grp"><td class="fam">Search</td><td class="m">Local search</td><td class="d">ignores the <strong>shared</strong> model across observations</td></tr>
+<tr class="grp"><td class="fam" rowspan="2">Reinforcement<br>learning</td><td class="m">Naive policy gradient</td><td class="d">collapses to the single <strong>highest-reward</strong> state</td></tr>
+<tr><td class="m">GFlowNets</td><td class="d">aim to <strong>sample in proportion to a fixed reward</strong> — not to maximize a likelihood</td></tr>
+</tbody>
+</table>
 
 > **Gap:** none of these directly maximize $\Pr(X_{1:N}\mid\theta)$ over a *discrete, combinatorial* state space.
 
 <!--
-EM: exact expectation needs summing over all states — only works for special structure (HMMs).
-VI: optimizes a lower bound (ELBO) instead of the true likelihood, and you must hand-design a
-tractable approximate posterior q(S) over a combinatorial space — exactly what's hard here.
+Grouped into four families so each method fits a bucket: exact inference, variational, search, RL.
+EXACT / EM: the E-step needs an exact expectation over all states — tractable ONLY for special
+structure like an HMM chain (forward–backward); it blows up the moment S is combinatorial. HMMs
+are the poster child for "where these tools work" — GReinSS is for everything past that.
+VARIATIONAL — VI: optimizes a lower bound (ELBO) instead of the true likelihood, and you must
+hand-design a tractable approximate posterior q(S) over a combinatorial space — exactly what's hard.
 VAE: great generative models, but the latent lives in a made-up ℝ^d, not your isoform space.
-Local search: per-observation, no sharing of statistical strength.
-Naive PG / GFlowNet are the closest cousins to what we do — and we'll see exactly why they fail.
+SEARCH — local search: per-observation, no sharing of statistical strength across observations.
+RL — naive PG / GFlowNet are the closest cousins to what we do — and we'll see exactly why they fail.
+Punchline: all four families miss the SAME target — directly maximizing the joint data likelihood.
 -->
-
----
-
-<!-- _class: divider -->
-
-# The GReinSS idea
-
-## Build the discrete state step by step with a **policy**, and reward trajectories by their **share** of each observation's likelihood.
-
-<span class="small">Generative Reinforcement Learning of Structured States</span>
 
 ---
 
@@ -425,84 +435,65 @@ th:nth-child(3), td:nth-child(3) { width: 250px; }
 
 <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
 
-<svg viewBox="0 0 220 284" width="195" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
+<svg viewBox="0 0 210 248" width="195" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
   <defs>
-    <marker id="ah7" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto">
+    <marker id="gEdge" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto">
       <path d="M0,0 L6,3 L0,6 Z" fill="#1b1f24"/>
     </marker>
-    <marker id="pah7" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto">
+    <marker id="gStep" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto">
       <path d="M0,0 L7,3.5 L0,7 Z" fill="#7a1fa2"/>
     </marker>
   </defs>
-  <path d="M44,44 q-14,0 -14,14 L30,147 q0,7 -8,7 q8,0 8,7 L30,252 q0,14 14,14"
-        fill="none" stroke="#7a1fa2" stroke-width="2.5"/>
-  <text x="10" y="164" font-size="30" font-style="italic" fill="#7a1fa2">&#964;</text>
-  <text x="124" y="14" text-anchor="middle" font-size="14" fill="#5b6672">empty graph</text>
-  <line x1="124" y1="20" x2="124" y2="38" stroke="#7a1fa2" stroke-width="3" marker-end="url(#pah7)"/>
-  <g transform="translate(0,42)">
-    <line x1="71" y1="22" x2="171" y2="22" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#ah7)"/>
-    <text x="120" y="14" text-anchor="middle" font-size="14" font-style="italic" fill="#7a1fa2">a</text>
-    <circle cx="64" cy="22" r="5" fill="#1b1f24"/><text x="56" y="27" text-anchor="end" font-size="14">A</text>
-    <circle cx="178" cy="22" r="5" fill="#1b1f24"/><text x="186" y="27" font-size="14">B</text>
+  <path d="M46,44 q-13,0 -13,13 L33,116 q0,7 -8,7 q8,0 8,7 L33,213 q0,13 13,13" fill="none" stroke="#7a1fa2" stroke-width="2.4"/>
+  <text x="14" y="132" font-size="26" font-style="italic" fill="#7a1fa2">&#964;</text>
+  <text x="126" y="20" text-anchor="middle" font-size="13" fill="#5b6672">empty graph</text>
+  <g transform="translate(0,40)">
+    <circle cx="74" cy="16" r="5" fill="#1b1f24"/><text x="66" y="21" text-anchor="end" font-size="14">A</text>
+    <circle cx="178" cy="16" r="5" fill="#1b1f24"/><text x="186" y="21" font-size="14">B</text>
   </g>
-  <line x1="124" y1="104" x2="124" y2="122" stroke="#7a1fa2" stroke-width="3" marker-end="url(#pah7)"/>
-  <g transform="translate(0,124)">
-    <line x1="71" y1="22" x2="171" y2="22" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#ah7)"/>
-    <text x="120" y="14" text-anchor="middle" font-size="14" font-style="italic" fill="#8a94a0">a</text>
-    <line x1="86" y1="50" x2="172" y2="27" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#ah7)"/>
-    <text x="136" y="47" text-anchor="middle" font-size="14" font-style="italic" fill="#7a1fa2">b</text>
-    <circle cx="64" cy="22" r="5" fill="#1b1f24"/><text x="56" y="27" text-anchor="end" font-size="14">A</text>
-    <circle cx="178" cy="22" r="5" fill="#1b1f24"/><text x="186" y="27" font-size="14">B</text>
-    <circle cx="80" cy="54" r="5" fill="#1b1f24"/><text x="80" y="70" text-anchor="middle" font-size="14">C</text>
+  <line x1="126" y1="76" x2="126" y2="100" stroke="#7a1fa2" stroke-width="2.6" marker-end="url(#gStep)"/>
+  <text x="139" y="93" font-size="14" font-style="italic" fill="#7a1fa2">a</text>
+  <g transform="translate(0,108)">
+    <line x1="81" y1="16" x2="171" y2="16" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#gEdge)"/>
+    <circle cx="74" cy="16" r="5" fill="#1b1f24"/><text x="66" y="21" text-anchor="end" font-size="14">A</text>
+    <circle cx="178" cy="16" r="5" fill="#1b1f24"/><text x="186" y="21" font-size="14">B</text>
   </g>
-  <line x1="124" y1="186" x2="124" y2="204" stroke="#7a1fa2" stroke-width="3" marker-end="url(#pah7)"/>
-  <g transform="translate(0,206)">
-    <line x1="71" y1="22" x2="171" y2="22" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#ah7)"/>
-    <text x="120" y="14" text-anchor="middle" font-size="14" font-style="italic" fill="#8a94a0">a</text>
-    <line x1="86" y1="50" x2="172" y2="27" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#ah7)"/>
-    <text x="136" y="47" text-anchor="middle" font-size="14" font-style="italic" fill="#8a94a0">b</text>
-    <line x1="78" y1="49" x2="67" y2="30" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#ah7)"/>
-    <text x="60" y="42" text-anchor="end" font-size="14" font-style="italic" fill="#7a1fa2">c</text>
-    <circle cx="64" cy="22" r="5" fill="#1b1f24"/><text x="56" y="27" text-anchor="end" font-size="14">A</text>
-    <circle cx="178" cy="22" r="5" fill="#1b1f24"/><text x="186" y="27" font-size="14">B</text>
-    <circle cx="80" cy="54" r="5" fill="#1b1f24"/><text x="80" y="70" text-anchor="middle" font-size="14">C</text>
+  <line x1="126" y1="144" x2="126" y2="168" stroke="#7a1fa2" stroke-width="2.6" marker-end="url(#gStep)"/>
+  <text x="139" y="161" font-size="14" font-style="italic" fill="#7a1fa2">b</text>
+  <g transform="translate(0,176)">
+    <line x1="81" y1="16" x2="171" y2="16" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#gEdge)"/>
+    <line x1="92" y1="42" x2="172" y2="21" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#gEdge)"/>
+    <circle cx="74" cy="16" r="5" fill="#1b1f24"/><text x="66" y="21" text-anchor="end" font-size="14">A</text>
+    <circle cx="178" cy="16" r="5" fill="#1b1f24"/><text x="186" y="21" font-size="14">B</text>
+    <circle cx="86" cy="44" r="5" fill="#1b1f24"/><text x="86" y="60" text-anchor="middle" font-size="14">C</text>
   </g>
 </svg>
 
-<svg viewBox="0 0 200 284" width="195" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
+<svg viewBox="0 0 210 248" width="195" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
   <defs>
-    <marker id="sah" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto">
+    <marker id="cStep" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto">
       <path d="M0,0 L7,3.5 L0,7 Z" fill="#7a1fa2"/>
     </marker>
   </defs>
-  <path d="M40,44 q-14,0 -14,14 L26,147 q0,7 -8,7 q8,0 8,7 L26,252 q0,14 14,14" fill="none" stroke="#7a1fa2" stroke-width="2.5"/>
-  <text x="8" y="164" font-size="30" font-style="italic" fill="#7a1fa2">&#964;</text>
-  <text x="118" y="14" text-anchor="middle" font-size="14" fill="#5b6672">diploid</text>
-  <g transform="translate(0,42)">
-    <rect x="77" y="8" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/>
-    <text x="90" y="26" text-anchor="middle" font-size="15">2</text>
-    <rect x="105" y="8" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/>
-    <text x="118" y="26" text-anchor="middle" font-size="15">2</text>
-    <rect x="133" y="8" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/>
-    <text x="146" y="26" text-anchor="middle" font-size="15">2</text>
+  <path d="M46,44 q-13,0 -13,13 L33,116 q0,7 -8,7 q8,0 8,7 L33,213 q0,13 13,13" fill="none" stroke="#7a1fa2" stroke-width="2.4"/>
+  <text x="14" y="132" font-size="26" font-style="italic" fill="#7a1fa2">&#964;</text>
+  <text x="131" y="20" text-anchor="middle" font-size="13" fill="#5b6672">diploid</text>
+  <g transform="translate(0,40)">
+    <rect x="92" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="105" y="21" text-anchor="middle" font-size="15">2</text>
+    <rect x="120" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="133" y="21" text-anchor="middle" font-size="15">2</text>
+    <rect x="148" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="161" y="21" text-anchor="middle" font-size="15">2</text>
   </g>
-  <line x1="118" y1="104" x2="118" y2="122" stroke="#7a1fa2" stroke-width="3" marker-end="url(#sah)"/>
-  <g transform="translate(0,124)">
-    <rect x="77" y="8" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/>
-    <text x="90" y="26" text-anchor="middle" font-size="15">2</text>
-    <rect x="105" y="8" width="26" height="26" rx="3" fill="#fff4ee" stroke="#7a1fa2" stroke-width="2"/>
-    <text x="118" y="26" text-anchor="middle" font-size="15" fill="#7a1fa2" font-weight="bold">3</text>
-    <rect x="133" y="8" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/>
-    <text x="146" y="26" text-anchor="middle" font-size="15">2</text>
+  <line x1="131" y1="76" x2="131" y2="100" stroke="#7a1fa2" stroke-width="2.6" marker-end="url(#cStep)"/>
+  <g transform="translate(0,108)">
+    <rect x="92" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="105" y="21" text-anchor="middle" font-size="15">2</text>
+    <rect x="120" y="3" width="26" height="26" rx="3" fill="#fff4ee" stroke="#7a1fa2" stroke-width="2"/><text x="133" y="21" text-anchor="middle" font-size="15" fill="#7a1fa2" font-weight="bold">3</text>
+    <rect x="148" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="161" y="21" text-anchor="middle" font-size="15">2</text>
   </g>
-  <line x1="118" y1="186" x2="118" y2="204" stroke="#7a1fa2" stroke-width="3" marker-end="url(#sah)"/>
-  <g transform="translate(0,206)">
-    <rect x="77" y="8" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/>
-    <text x="90" y="26" text-anchor="middle" font-size="15">2</text>
-    <rect x="105" y="8" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/>
-    <text x="118" y="26" text-anchor="middle" font-size="15">3</text>
-    <rect x="133" y="8" width="26" height="26" rx="3" fill="#fff4ee" stroke="#7a1fa2" stroke-width="2"/>
-    <text x="146" y="26" text-anchor="middle" font-size="15" fill="#7a1fa2" font-weight="bold">1</text>
+  <line x1="131" y1="144" x2="131" y2="168" stroke="#7a1fa2" stroke-width="2.6" marker-end="url(#cStep)"/>
+  <g transform="translate(0,176)">
+    <rect x="92" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="105" y="21" text-anchor="middle" font-size="15">2</text>
+    <rect x="120" y="3" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/><text x="133" y="21" text-anchor="middle" font-size="15">3</text>
+    <rect x="148" y="3" width="26" height="26" rx="3" fill="#fff4ee" stroke="#7a1fa2" stroke-width="2"/><text x="161" y="21" text-anchor="middle" font-size="15" fill="#7a1fa2" font-weight="bold">1</text>
   </g>
 </svg>
 
@@ -659,32 +650,6 @@ notebook will show: write those two functions and call train().
 
 ---
 
-## Off-policy learning (when on-policy is too slow)
-
-If sampling $\Pr(\tau\mid\theta)$ rarely produces states that explain any $X_i$, learning stalls.
-
-**Sample where the data says to look** — bias toward the Bayes posterior:
-
-<div class="theorem">
-
-**Theorem 2 (Optimal off-policy proposal).** *The unbiased, variance-minimizing sampling proposal is*
-
-$$q(\tau\mid X_{1:N},\theta)=\tfrac1N\sum_{i=1}^{N}\Pr(\tau\mid X_i,\theta),\qquad \Pr(\tau\mid X_i,\theta)=\frac{\Pr(X_i\mid\tau)\,\Pr(\tau\mid\theta)}{\Pr(X_i\mid\theta)}.$$
-
-</div>
-
-> Importance sampling keeps the gradient correct. *In cancer apps, a cheap heuristic (e.g. CNNaive in CNRein) seeds plausible states.*
-
-<!--
-Practical must-have for hard problems. Instead of blindly sampling from the policy, we
-tilt sampling toward states that actually fit each observation — provably the best proposal.
-In our biology applications this is where domain knowledge enters: a fast classical method
-proposes candidate states, and GReinSS refines the distribution over them.
-Keep this slide brief unless the audience asks.
--->
-
----
-
 ## Intuition behind dynamic rewards — why the denominator $\Pr(X_i\mid \theta)$?
 
 <style scoped>
@@ -821,27 +786,6 @@ Punchline: the denominator = automatic load-balancing across observations.
 
 ---
 
-## The scoreboard — who actually maximizes the likelihood?
-
-| Method | Paradigm | Max. $\prod_i\Pr(X_i\mid\theta)$? |
-|---|---|---|
-| **GReinSS** | RL | ✅ **Yes** |
-| Naive policy gradient | RL | ❌ No |
-| GFlowNets | RL | ❌ No |
-| VAE / autoregressive / diffusion **+ EM** | EM | ≈ approx. |
-| Local search | per-observation | ❌ No |
-
-> One green **Yes**. The RL cousins optimize the *wrong* target; EM methods only *approximate* it; local search ignores the **shared** model entirely.
-
-<!--
-The positive flip of the opening "why tools struggle" table. Same objective across the board;
-only GReinSS provably maximizes the joint data likelihood. Naive PG collapses to one state;
-GFlowNets match rewards, not likelihood; EM-based generative models approximate via point
-estimates; local search has no shared model. This is the one-slide "why us" scoreboard.
--->
-
----
-
 <!-- _class: demo -->
 
 ## → NOTEBOOK · Demo 1: Set reconstruction
@@ -877,6 +821,64 @@ SWITCH TO JUPYTER. Walk through: load observations → define Pr(X|S) (one line)
 build generator net → train ~200 epochs live (watch the likelihood curve rise) →
 infer states → compare to naive thresholding. The punchline: GReinSS denoises using
 structure shared across observations, beating per-pixel rounding.
+-->
+
+---
+
+## Off-policy learning (when on-policy is too slow)
+
+If sampling $\Pr(\tau\mid\theta)$ rarely produces states that explain any $X_i$, learning stalls.
+
+**Sample where the data says to look** — bias toward the Bayes posterior:
+
+<div class="theorem">
+
+**Theorem 2 (Optimal off-policy proposal).** *The unbiased, variance-minimizing sampling proposal is*
+
+$$q(\tau\mid X_{1:N},\theta)=\tfrac1N\sum_{i=1}^{N}\Pr(\tau\mid X_i,\theta),\qquad \Pr(\tau\mid X_i,\theta)=\frac{\Pr(X_i\mid\tau)\,\Pr(\tau\mid\theta)}{\Pr(X_i\mid\theta)}.$$
+
+</div>
+
+> Importance sampling keeps the gradient correct. *In cancer apps, a cheap heuristic (e.g. CNNaive in CNRein) seeds plausible states.*
+
+<!--
+Practical must-have for hard problems. Instead of blindly sampling from the policy, we
+tilt sampling toward states that actually fit each observation — provably the best proposal.
+In our biology applications this is where domain knowledge enters: a fast classical method
+proposes candidate states, and GReinSS refines the distribution over them.
+Keep this slide brief unless the audience asks.
+-->
+
+---
+
+## The scoreboard — who actually maximizes the likelihood?
+
+| Method | Family | Max. $\prod_i\Pr(X_i\mid\theta)$? |
+|---|---|---|
+| **GReinSS** | RL | ✅ **Yes** |
+| Naive policy gradient | RL | ❌ No |
+| GFlowNets | RL | ❌ No |
+| VAE / autoregressive / diffusion **+ EM** | Variational · EM | ≈ approx. |
+| Local search | Search | ❌ No |
+
+<div class="key">
+
+**GFlowNets — closest cousin, different goal:** they *sample* states $\propto$ a **fixed, given reward** $R(S)$ (diverse candidates); GReinSS has **no fixed reward**, *rescaling* it each step so maximizing it **provably equals maximum-likelihood** learning.
+
+</div>
+
+<!--
+The positive flip of the opening "why tools struggle" table — SAME four families (RL, variational,
+EM, search), now scored on the one question that matters. Same objective across the board; only
+GReinSS provably maximizes the joint data likelihood. Naive PG collapses to one state;
+variational / EM-based generative models approximate via a bound or point estimates; local search
+has no shared model.
+GFlowNets are the subtle one — spell out the contrast: a GFlowNet is TRAINED to sample states with
+probability proportional to a KNOWN, FIXED reward R (its whole point is diverse, reward-proportional
+candidates). We are not matching a fixed reward at all — there is no given reward. Our "reward" is
+defined by the data and RESCALED every iteration (Thm 1) so that the policy-gradient objective
+coincides with the marginal data log-likelihood. Same REINFORCE machinery, fundamentally different
+target: distribution-matching a fixed reward vs. maximum-likelihood learning of a latent-variable model.
 -->
 
 ---
