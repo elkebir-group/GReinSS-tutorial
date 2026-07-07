@@ -13,4 +13,5 @@ code/graph_model.pt
 
 # scratch
 _slidepngs/
+_chk/
 assets/pretrain.log

@@ -1,6 +1,7 @@
 ---
 marp: true
-title: "GReinSS: Generative Modeling of Discrete Latent Structures via Dynamic Policy Gradients"
+theme: greinss
+title: "GReinSS: Generative Reinforcement Learning of Structured States via Dynamic Policy Gradients"
 author: "Mohammed El-Kebir"
 math: katex
 paginate: true
@@ -11,105 +12,6 @@ GReinSS tutorial — NCI Spring School on Algorithmic Cancer Biology
 Speaker notes are in HTML comments like this one.
 Live-demo hand-offs are marked "→ NOTEBOOK".
 -->
-
-<style>
-/* ===================== Theme: greinss ===================== */
-:root {
-  --ill-orange: #FF5F05;
-  --ill-blue:   #13294B;
-  --ink:        #1b1f24;
-  --muted:      #5b6672;
-  --bg:         #ffffff;
-  --panel:      #f4f6f9;
-  --accent:     #0b6cbf;
-}
-section {
-  font-family: "Helvetica Neue", Arial, sans-serif;
-  font-size: 26px;
-  color: var(--ink);
-  background: var(--bg);
-  padding: 56px 64px;
-  line-height: 1.4;
-  /* anchor content (and the title) to the top so headings don't drift with content height */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-h1 { color: var(--ill-blue); font-size: 46px; margin: 0 0 12px 0; }
-h2 { color: var(--ill-blue); font-size: 34px; margin: 0 0 18px 0;
-     border-bottom: 3px solid var(--ill-orange); padding-bottom: 8px; }
-h3 { color: var(--ill-orange); font-size: 26px; margin: 6px 0; }
-strong { color: var(--ill-blue); }
-a { color: var(--accent); }
-em { color: var(--muted); font-style: italic; }
-code { background: var(--panel); color: #b0330a; padding: 1px 6px; border-radius: 4px; font-size: 0.85em; }
-ul, ol { margin: 6px 0; }
-li { margin: 7px 0; }
-section::after { color: var(--muted); font-size: 16px; }
-blockquote {
-  border-left: 5px solid var(--ill-orange);
-  background: var(--panel);
-  margin: 5px 0; padding: 9px 20px; color: var(--ink); font-style: normal;
-}
-.small { font-size: 20px; color: var(--muted); }
-.tag { color: var(--ill-orange); font-weight: bold; letter-spacing: 0.5px; }
-.center { text-align: center; }
-table { font-size: 22px; margin: 8px auto; }
-th { background: var(--ill-blue); color: #fff; padding: 8px 14px; }
-td { padding: 7px 14px; border-bottom: 1px solid #dde3ea; }
-.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: center; }
-.cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; align-items: stretch; }
-.cols3 .box { display: flex; flex-direction: column; padding: 7px 14px; font-size: 21px; }
-.cols3 h3 { margin: 2px 0 4px; }
-.exfig { height: 52px; display: flex; align-items: center; justify-content: center; margin: 0 0 4px; }
-.exfig img { max-height: 52px; width: auto; }
-.midline { text-align: center; margin: 6px auto; font-size: 24px; max-width: 1040px; }
-.setup { margin-bottom: 3px; }
-.setup .box { font-size: 26px; padding-top: 8px; padding-bottom: 8px; }
-.sfig { margin-top: auto; padding-top: 6px; display: flex; align-items: flex-end; justify-content: center; }
-.sfig img { max-height: 76px; width: auto; }
-.s3fig { margin: auto 0; padding-top: 4px; display: flex; align-items: center; justify-content: center; }
-.s3fig img, .s3fig svg { max-height: 152px; width: auto; }
-.emit { display: flex; align-items: center; justify-content: center; gap: 10px; }
-.emit img { max-height: 42px; width: auto; margin: 0; }
-.arw { font-size: 30px; color: var(--muted); line-height: 1; }
-.plate { text-align: center; margin: 2px auto; }
-.platebox { margin: auto 0; padding-top: 4px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.problem { background: #fff8e1; border: 2px solid #f0b429; border-left: 7px solid #f0b429;
-           border-radius: 8px; padding: 8px 22px; margin: 10px 0; }
-.problem strong { color: #8a5a00; }
-.problem em { color: var(--ink); font-style: italic; }
-.cite { display: block; margin-top: auto; padding-top: 4px; font-size: 14px; color: var(--muted); font-style: italic; }
-.box { background: var(--panel); border-radius: 10px; padding: 14px 20px; }
-.key { background: #fff4ee; border: 2px solid var(--ill-orange); border-radius: 10px; padding: 14px 20px; }
-.eqbox { border-radius: 10px; padding: 10px 18px; text-align: center; }
-.eqbox .lbl { display: block; font-size: 18px; font-weight: bold; margin-top: 2px; }
-.gbox { background: #eafbef; border: 2px solid #1a7f37; }
-.gbox .lbl { color: #1a7f37; }
-.rbox { background: #fdeeea; border: 2px solid #c0341a; }
-.rbox .lbl { color: #c0341a; }
-.eqsplit { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: center; margin: 8px 0; }
-.eqsplit .eq { font-size: 40px; color: var(--muted); text-align: center; }
-.theorem { background: #fff8e1; border: 2px solid #f0b429; border-left: 7px solid #f0b429;
-           border-radius: 8px; padding: 8px 22px; margin: 12px 0; }
-.theorem strong { color: #8a5a00; }
-.theorem em { color: var(--ink); font-style: italic; }
-img { display: block; margin: 0 auto; }
-
-/* Title / section-divider layouts — these two stay vertically centered on purpose */
-section.title, section.divider { justify-content: center; }
-section.title { background: linear-gradient(135deg, #13294B 0%, #0b6cbf 100%); color: #fff; }
-section.title h1 { color: #fff; font-size: 52px; }
-section.title h2 { color: #ffd9c7; border: none; font-size: 28px; }
-section.title p, section.title strong { color: #eaf1f8; }
-section.title strong { color: #fff; }
-section.divider { background: var(--ill-blue); color: #fff; }
-section.divider h1 { color: #fff; }
-section.divider h2 { color: var(--ill-orange); border: none; }
-section.divider p, section.divider li { color: #dbe4ef; }
-section.demo { background: #fff4ee; }
-section.demo h2 { color: var(--ill-orange); border-bottom-color: var(--ill-blue); }
-</style>
 
 <!-- _class: title -->
 <!-- _paginate: false -->
@@ -140,6 +42,11 @@ Goal: you leave able to apply it to your own problem.
 ---
 
 ## A recurring statistical inference problem in computational biology
+
+<style scoped>
+.setup { margin-bottom: 18px; }
+blockquote { margin: 18px 0; }
+</style>
 
 <div class="cols3 setup">
 <div class="box center">
@@ -380,19 +287,146 @@ Naive PG / GFlowNet are the closest cousins to what we do — and we'll see exac
 
 ---
 
-## Generate states as trajectories
+## Primer on reinforcement learning (RL)
 
-A **policy** with parameters $\theta$ builds a state by a sequence of actions — a **trajectory** $\tau$ ending in a terminal state $S(\tau)\in\mathcal S$.
+> **Key question:** What actions should an agent take to maximize a reward signal? 
+
+<style scoped>
+.cols { grid-template-columns: 2.15fr 1fr; }
+table { table-layout: fixed; width: 435px; margin: 6px 0; font-size: 20px; }
+th, td { box-sizing: border-box; }
+th:nth-child(1), td:nth-child(1) { width: 150px; }
+th:nth-child(2), td:nth-child(2) { width: 285px; }
+</style>
 
 <div class="cols">
+<div style="display: flex; align-items: center; gap: 14px;">
+
+| Concept | In RL |
+|---|---|
+| **State** $s_t$ | current situation |
+| **Action** $a_t$ | transitions $s_t\to s_{t+1}$ |
+| **Policy** $\pi_\theta$ | picks the next action |
+| **Trajectory** $\tau$ | path $s_0\to\cdots\to s_{\lvert\tau\rvert}$ |
+| **Reward** $r(\tau)$ | scores terminal state |
+| **Objective** | $\max_\theta \mathbb{E}_\tau[r(\tau)]$ |
+
+<div style="flex: 1; text-align: center;">
+
+<svg viewBox="0 0 300 250" width="300" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
+  <defs>
+    <marker id="rlah" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#8a94a0"/>
+    </marker>
+  </defs>
+  <line x1="169.5" y1="78" x2="228.5" y2="170" stroke="#8a94a0" stroke-width="2.5" marker-end="url(#rlah)"/>
+  <line x1="212" y1="196" x2="88" y2="196" stroke="#8a94a0" stroke-width="2.5" marker-end="url(#rlah)"/>
+  <line x1="71.5" y1="170" x2="130.5" y2="78" stroke="#8a94a0" stroke-width="2.5" marker-end="url(#rlah)"/>
+  <text x="212" y="120" font-size="14" fill="#FF5F05" font-style="italic">sample</text>
+  <text x="150" y="189" text-anchor="middle" font-size="14" fill="#FF5F05" font-style="italic">score</text>
+  <text x="90" y="120" text-anchor="end" font-size="14" fill="#FF5F05" font-style="italic">update &#952;</text>
+  <circle cx="150" cy="46" r="36" fill="#f4f6f9" stroke="#13294B" stroke-width="2.5"/>
+  <text x="150" y="42" text-anchor="middle" font-size="13" font-weight="bold" fill="#13294B">Policy</text>
+  <text x="150" y="63" text-anchor="middle" font-size="18" font-style="italic" fill="#1b1f24">&#960;<tspan font-size="12" dy="4">&#952;</tspan></text>
+  <circle cx="250" cy="196" r="36" fill="#f4f6f9" stroke="#13294B" stroke-width="2.5"/>
+  <text x="250" y="192" text-anchor="middle" font-size="13" font-weight="bold" fill="#13294B">Trajectory</text>
+  <text x="250" y="214" text-anchor="middle" font-size="18" font-style="italic" fill="#1b1f24">&#964;</text>
+  <circle cx="50" cy="196" r="36" fill="#f4f6f9" stroke="#13294B" stroke-width="2.5"/>
+  <text x="50" y="192" text-anchor="middle" font-size="13" font-weight="bold" fill="#13294B">Reward</text>
+  <text x="50" y="214" text-anchor="middle" font-size="16" font-style="italic" fill="#1b1f24">r(&#964;)</text>
+</svg>
+
+</div>
+
+</div>
 <div class="center">
 
-<svg viewBox="0 0 220 284" width="320" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
+<svg viewBox="0 0 200 268" width="210" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
   <defs>
-    <marker id="ah" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto">
+    <marker id="tjah" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#7a1fa2"/>
+    </marker>
+  </defs>
+  <path d="M62,16 q-13,0 -13,13 L49,124 q0,7 -7,8 q7,1 7,8 L49,238 q0,13 13,13" fill="none" stroke="#7a1fa2" stroke-width="2.5"/>
+  <text x="26" y="142" font-size="28" font-style="italic" fill="#7a1fa2">&#964;</text>
+  <line x1="120" y1="49" x2="120" y2="81" stroke="#7a1fa2" stroke-width="2.5" marker-end="url(#tjah)"/>
+  <line x1="120" y1="121" x2="120" y2="153" stroke="#7a1fa2" stroke-width="2.5" marker-end="url(#tjah)"/>
+  <line x1="120" y1="193" x2="120" y2="225" stroke="#7a1fa2" stroke-width="2.5" marker-end="url(#tjah)"/>
+  <text x="136" y="69" font-size="15" font-style="italic" fill="#5b6672">a<tspan font-size="10" dy="4">1</tspan></text>
+  <text x="136" y="141" font-size="15" font-style="italic" fill="#5b6672">a<tspan font-size="10" dy="4">2</tspan></text>
+  <text x="136" y="213" font-size="15" font-style="italic" fill="#5b6672">a<tspan font-size="10" dy="4">3</tspan></text>
+  <circle cx="120" cy="30" r="19" fill="#f4f6f9" stroke="#13294B" stroke-width="2"/>
+  <text x="120" y="35" text-anchor="middle" font-size="16" font-style="italic" fill="#1b1f24">s<tspan font-size="10" dy="4">0</tspan></text>
+  <circle cx="120" cy="102" r="19" fill="#f4f6f9" stroke="#13294B" stroke-width="2"/>
+  <text x="120" y="107" text-anchor="middle" font-size="16" font-style="italic" fill="#1b1f24">s<tspan font-size="10" dy="4">1</tspan></text>
+  <circle cx="120" cy="174" r="19" fill="#f4f6f9" stroke="#13294B" stroke-width="2"/>
+  <text x="120" y="179" text-anchor="middle" font-size="16" font-style="italic" fill="#1b1f24">s<tspan font-size="10" dy="4">2</tspan></text>
+  <circle cx="120" cy="246" r="19" fill="#fff4ee" stroke="#FF5F05" stroke-width="2.5"/>
+  <text x="120" y="251" text-anchor="middle" font-size="15" font-style="italic" fill="#c0341a">s<tspan font-size="10" dy="4">|&#964;|</tspan></text>
+</svg>
+
+<div class="small" style="margin-top: 2px;">a trajectory &#964;</div>
+
+</div>
+</div>
+
+<div class="key">
+
+**Policy gradient (REINFORCE):** $\;\nabla_\theta\,\mathbb{E}_{\tau\sim\Pr(\tau\mid\theta)}[r(\tau)]=\mathbb{E}_\tau\big[r(\tau)\,\nabla_\theta\log\Pr(\tau\mid\theta)\big]$ — *gradient through $\log\Pr(\tau\mid\theta)$ only, not the fixed reward $r(\tau)$.*
+
+</div>
+
+<!--
+The generic RL mental model, deliberately provider-neutral and episodic:
+the policy builds an object action-by-action (a trajectory), a scalar reward scores
+the finished trajectory, and the goal is to maximize EXPECTED reward. Trace the three
+arrows aloud: sample τ from the policy → score it → policy-gradient nudge, then repeat.
+The one identity they must take away is REINFORCE: you can differentiate an expectation
+over samples by weighting each trajectory's log-prob gradient by its reward — no gradient
+through the reward itself. Everything on the next two content slides is this loop with a
+specific reward plugged in. Contrast up top with supervised learning to anchor the audience.
+-->
+
+---
+
+## GReinSS: <u>G</u>enerative <u>Rein</u>forcement Learning of <u>S</u>tructured <u>S</u>tates
+
+> **Policy gradient (REINFORCE):** $\;\nabla_\theta\,\mathbb{E}_{\tau\sim\Pr(\tau\mid\theta)}[r(\tau)]=\mathbb{E}_\tau\big[r(\tau)\,\nabla_\theta\log\Pr(\tau\mid\theta)\big]$
+
+<!--> **Key question:** Can we adapt reward function $r(\tau)$ to optimize data likelihood $\Pr(X_{1:N}\mid \theta)$?-->
+
+<style scoped>
+.cols { grid-template-columns: 700px 1fr; }
+table { table-layout: fixed; width: 685px; margin: 6px 0; font-size: 20px; }
+th, td { box-sizing: border-box; padding: 7px 8px; }
+th:nth-child(1), td:nth-child(1) { width: 150px; }
+th:nth-child(2), td:nth-child(2) { width: 285px; }
+th:nth-child(3), td:nth-child(3) { width: 250px; }
+</style>
+
+<div class="cols">
+<div>
+
+| Concept | In RL | In GReinSS |
+|---|---|---|
+| **State** $s_t$ | current situation | <span style="color:#8a94a0;font-style:italic">same as RL</span> |
+| **Action** $a_t$ | transitions $s_t\to s_{t+1}$ | <span style="color:#8a94a0;font-style:italic">same as RL</span> |
+| **Policy** $\pi_\theta$ | picks the next action | <span style="color:#8a94a0;font-style:italic">same as RL</span> |
+| **Trajectory** $\tau$ | path $s_0\to\cdots\to s_{\lvert\tau\rvert}$ | <span style="color:#8a94a0;font-style:italic">same, terminal $S(\tau)$</span> |
+| **Reward** $r(\tau)$ | scores terminal state | <span style="color:#c0341a;font-weight:600">use $\Pr(X\mid S)$???</span> |
+| **Objective** |  $\max_\theta \mathbb{E}_\tau[r(\tau)]$ | <span style="color:#c0341a;font-weight:600">$\max_\theta \log\Pr(X_{1:N}\mid\theta)$</span> |
+
+</div>
+<div class="center">
+
+<div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
+
+<svg viewBox="0 0 220 284" width="195" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
+  <defs>
+    <marker id="ah7" markerWidth="7" markerHeight="7" refX="5.5" refY="3" orient="auto">
       <path d="M0,0 L6,3 L0,6 Z" fill="#1b1f24"/>
     </marker>
-    <marker id="pah" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto">
+    <marker id="pah7" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto">
       <path d="M0,0 L7,3.5 L0,7 Z" fill="#7a1fa2"/>
     </marker>
   </defs>
@@ -400,30 +434,30 @@ A **policy** with parameters $\theta$ builds a state by a sequence of actions �
         fill="none" stroke="#7a1fa2" stroke-width="2.5"/>
   <text x="10" y="164" font-size="30" font-style="italic" fill="#7a1fa2">&#964;</text>
   <text x="124" y="14" text-anchor="middle" font-size="14" fill="#5b6672">empty graph</text>
-  <line x1="124" y1="20" x2="124" y2="38" stroke="#7a1fa2" stroke-width="3" marker-end="url(#pah)"/>
+  <line x1="124" y1="20" x2="124" y2="38" stroke="#7a1fa2" stroke-width="3" marker-end="url(#pah7)"/>
   <g transform="translate(0,42)">
-    <line x1="71" y1="22" x2="171" y2="22" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#ah)"/>
+    <line x1="71" y1="22" x2="171" y2="22" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#ah7)"/>
     <text x="120" y="14" text-anchor="middle" font-size="14" font-style="italic" fill="#7a1fa2">a</text>
     <circle cx="64" cy="22" r="5" fill="#1b1f24"/><text x="56" y="27" text-anchor="end" font-size="14">A</text>
     <circle cx="178" cy="22" r="5" fill="#1b1f24"/><text x="186" y="27" font-size="14">B</text>
   </g>
-  <line x1="124" y1="104" x2="124" y2="122" stroke="#7a1fa2" stroke-width="3" marker-end="url(#pah)"/>
+  <line x1="124" y1="104" x2="124" y2="122" stroke="#7a1fa2" stroke-width="3" marker-end="url(#pah7)"/>
   <g transform="translate(0,124)">
-    <line x1="71" y1="22" x2="171" y2="22" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#ah)"/>
+    <line x1="71" y1="22" x2="171" y2="22" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#ah7)"/>
     <text x="120" y="14" text-anchor="middle" font-size="14" font-style="italic" fill="#8a94a0">a</text>
-    <line x1="86" y1="50" x2="172" y2="27" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#ah)"/>
+    <line x1="86" y1="50" x2="172" y2="27" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#ah7)"/>
     <text x="136" y="47" text-anchor="middle" font-size="14" font-style="italic" fill="#7a1fa2">b</text>
     <circle cx="64" cy="22" r="5" fill="#1b1f24"/><text x="56" y="27" text-anchor="end" font-size="14">A</text>
     <circle cx="178" cy="22" r="5" fill="#1b1f24"/><text x="186" y="27" font-size="14">B</text>
     <circle cx="80" cy="54" r="5" fill="#1b1f24"/><text x="80" y="70" text-anchor="middle" font-size="14">C</text>
   </g>
-  <line x1="124" y1="186" x2="124" y2="204" stroke="#7a1fa2" stroke-width="3" marker-end="url(#pah)"/>
+  <line x1="124" y1="186" x2="124" y2="204" stroke="#7a1fa2" stroke-width="3" marker-end="url(#pah7)"/>
   <g transform="translate(0,206)">
-    <line x1="71" y1="22" x2="171" y2="22" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#ah)"/>
+    <line x1="71" y1="22" x2="171" y2="22" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#ah7)"/>
     <text x="120" y="14" text-anchor="middle" font-size="14" font-style="italic" fill="#8a94a0">a</text>
-    <line x1="86" y1="50" x2="172" y2="27" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#ah)"/>
+    <line x1="86" y1="50" x2="172" y2="27" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#ah7)"/>
     <text x="136" y="47" text-anchor="middle" font-size="14" font-style="italic" fill="#8a94a0">b</text>
-    <line x1="78" y1="49" x2="67" y2="30" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#ah)"/>
+    <line x1="78" y1="49" x2="67" y2="30" stroke="#1b1f24" stroke-width="1.6" marker-end="url(#ah7)"/>
     <text x="60" y="42" text-anchor="end" font-size="14" font-style="italic" fill="#7a1fa2">c</text>
     <circle cx="64" cy="22" r="5" fill="#1b1f24"/><text x="56" y="27" text-anchor="end" font-size="14">A</text>
     <circle cx="178" cy="22" r="5" fill="#1b1f24"/><text x="186" y="27" font-size="14">B</text>
@@ -431,40 +465,73 @@ A **policy** with parameters $\theta$ builds a state by a sequence of actions �
   </g>
 </svg>
 
-<span class="small">$\tau$ = the sequence of actions; $S(\tau)$ is its terminal state</span>
+<svg viewBox="0 0 200 284" width="195" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica Neue, Arial, sans-serif">
+  <defs>
+    <marker id="sah" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#7a1fa2"/>
+    </marker>
+  </defs>
+  <path d="M40,44 q-14,0 -14,14 L26,147 q0,7 -8,7 q8,0 8,7 L26,252 q0,14 14,14" fill="none" stroke="#7a1fa2" stroke-width="2.5"/>
+  <text x="8" y="164" font-size="30" font-style="italic" fill="#7a1fa2">&#964;</text>
+  <text x="118" y="14" text-anchor="middle" font-size="14" fill="#5b6672">diploid</text>
+  <g transform="translate(0,42)">
+    <rect x="77" y="8" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/>
+    <text x="90" y="26" text-anchor="middle" font-size="15">2</text>
+    <rect x="105" y="8" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/>
+    <text x="118" y="26" text-anchor="middle" font-size="15">2</text>
+    <rect x="133" y="8" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/>
+    <text x="146" y="26" text-anchor="middle" font-size="15">2</text>
+  </g>
+  <line x1="118" y1="104" x2="118" y2="122" stroke="#7a1fa2" stroke-width="3" marker-end="url(#sah)"/>
+  <g transform="translate(0,124)">
+    <rect x="77" y="8" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/>
+    <text x="90" y="26" text-anchor="middle" font-size="15">2</text>
+    <rect x="105" y="8" width="26" height="26" rx="3" fill="#fff4ee" stroke="#7a1fa2" stroke-width="2"/>
+    <text x="118" y="26" text-anchor="middle" font-size="15" fill="#7a1fa2" font-weight="bold">3</text>
+    <rect x="133" y="8" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/>
+    <text x="146" y="26" text-anchor="middle" font-size="15">2</text>
+  </g>
+  <line x1="118" y1="186" x2="118" y2="204" stroke="#7a1fa2" stroke-width="3" marker-end="url(#sah)"/>
+  <g transform="translate(0,206)">
+    <rect x="77" y="8" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/>
+    <text x="90" y="26" text-anchor="middle" font-size="15">2</text>
+    <rect x="105" y="8" width="26" height="26" rx="3" fill="#f4f6f9" stroke="#8a94a0" stroke-width="1.6"/>
+    <text x="118" y="26" text-anchor="middle" font-size="15">3</text>
+    <rect x="133" y="8" width="26" height="26" rx="3" fill="#fff4ee" stroke="#7a1fa2" stroke-width="2"/>
+    <text x="146" y="26" text-anchor="middle" font-size="15" fill="#7a1fa2" font-weight="bold">1</text>
+  </g>
+</svg>
 
 </div>
-<div>
-
-- add an **edge** → a graph
-- add an **element** → a set
-- add a **junction** → an isoform
-
-The policy is a **neural network** whose weights are the parameters $\theta$ we learn.
-
-Sequential construction makes *combinatorial* spaces tractable: no summation over $\mathcal S$, just **sampling** trajectories.
-
-$$\Pr(X\mid\theta)=\mathbb{E}_{\tau\sim\Pr(\tau\mid\theta)}\big[\Pr(X\mid S(\tau))\big]$$
-
 </div>
+</div>
+
+<div class="key">
+
+**Key question:** How to set rewards $r(\tau)$ such that ${\nabla_\theta\,\mathbb{E}_{\tau\sim\Pr(\tau\mid\theta)}[r(\tau)]=\mathbb{E}_\tau\big[r(\tau)\,\nabla_\theta\log\Pr(\tau\mid\theta)\big] = \nabla_\theta \log \Pr(X_{1:N} \mid \theta)}$?
+
 </div>
 
 <!--
-This is the RL move: represent a big discrete object as a path of small decisions.
-The policy is a neural net that at each step picks the next action. Any structure you
-can grow incrementally fits. We never enumerate S — we sample trajectories and average.
+Same diagram, re-labeled — say it out loud: "nothing about the machinery changes."
+Actions grow a discrete structure; the trajectory's terminal state IS the object we care
+about S(τ); the policy is a neural net; the reward (orange, highlighted) is the only novel
+piece and the objective is now the data log-likelihood, not a hand-picked reward. This is
+the pivot: GReinSS = policy gradient where the reward is engineered so that maximizing
+expected reward provably equals maximum-likelihood learning. Hold the suspense on the exact
+reward formula — that's the very next slide (the denominator is the whole trick).
 -->
 
 ---
 
-## The one equation that matters
+## Dynamically-changing rewards
 
 Train with a policy gradient using the **dynamically rescaled reward** $\;r(\tau)=\sum_{i=1}^{N}\dfrac{\Pr(X_i\mid\tau)}{\Pr(X_i\mid\theta)}$.
 
 <div class="eqsplit">
 <div class="eqbox gbox">
 
-$$\frac{d}{d\theta}\log\Pr(X_{1:N}\mid\theta)$$
+$$\nabla_\theta\log\Pr(X_{1:N}\mid\theta)$$
 
 <span class="lbl">what we optimize</span>
 
@@ -472,7 +539,7 @@ $$\frac{d}{d\theta}\log\Pr(X_{1:N}\mid\theta)$$
 <div class="eq">=</div>
 <div class="eqbox rbox">
 
-$$\mathbb{E}_\tau\!\Big[r(\tau)\,\tfrac{d}{d\theta}\log\Pr(\tau\mid\theta)\Big]$$
+$$\mathbb{E}_\tau\!\Big[r(\tau)\,\nabla_\theta\log\Pr(\tau\mid\theta)\Big]$$
 
 <span class="lbl">how we optimize it</span>
 
@@ -481,7 +548,7 @@ $$\mathbb{E}_\tau\!\Big[r(\tau)\,\tfrac{d}{d\theta}\log\Pr(\tau\mid\theta)\Big]$
 
 <div class="theorem">
 
-**Theorem 1 (Unbiased policy gradient).** *With the dynamically changing reward $r(\tau)=\sum_{i=1}^{N}\Pr(X_i\mid\tau)/\Pr(X_i\mid\theta)$, the policy gradient $\mathbb{E}_\tau\!\big[r(\tau)\,\tfrac{d}{d\theta}\log\Pr(\tau\mid\theta)\big]$ is an unbiased estimator of $\tfrac{d}{d\theta}\log\Pr(X_{1:N}\mid\theta)$, the gradient of the log-likelihood objective.*
+**Theorem 1 (Unbiased policy gradient).** *With the dynamically changing reward $r(\tau)=\sum_{i=1}^{N}\Pr(X_i\mid\tau)/\Pr(X_i\mid\theta)$, the policy gradient $\mathbb{E}_\tau\!\big[r(\tau)\,\nabla_\theta\log\Pr(\tau\mid\theta)\big]$ is an unbiased estimator of $\nabla_\theta\log\Pr(X_{1:N}\mid\theta)$, the gradient of the log-likelihood objective.*
 
 </div>
 

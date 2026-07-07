@@ -4,7 +4,7 @@
 # inline <svg> figures that are escaped to literal text without it.
 
 marp   := "marp"
-flags  := "--html --allow-local-files"
+flags  := "--html --allow-local-files --theme-set themes/greinss.css"
 pngdir := "_slidepngs"
 
 # List available recipes
