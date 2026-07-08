@@ -51,6 +51,7 @@ jobs:
         run: just pdf html
 
       - name: Attach to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')   # only on a v* tag; manual runs are a build smoke-test
         uses: softprops/action-gh-release@v2
         with:
           files: |

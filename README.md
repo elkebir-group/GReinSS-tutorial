@@ -136,29 +136,3 @@ commit to `gh-pages` (so that branch stays a single throwaway commit, no history
 
 **One-time setup:** repo **Settings → Pages → Source = "Deploy from a branch", branch =
 `gh-pages` / `root`.** Edit the landing page at `pages/index.html`.
-
-## Suggested flow
-
-| Time | Slides | Notes |
-|---|---|---|
-| 0–4 min | Motivation → two problems | Frame with cancer states: phylogenies, CNVs, isoforms. |
-| 4–9 min | Why usual tools fail → the idea → **the one equation** | The theorem is the crux; keep to intuition. |
-| 9–12 min | Toy intuition slide | Denominator = "reward shrinks as it succeeds." |
-| 12–17 min | **Notebook Demo 1** (sets `\|U\|=100`, live) | Train live; show likelihood curve + denoising vs thresholding. |
-| 17–20 min | Off-policy slide → **Notebook Demo 2** (scaling to `\|U\|=1000`) | Same recipe collapses on-policy; the observation-biased off-policy proposal rescues it (F1 ≈ 0.94). |
-| 20–23 min | Scoreboard → simulation results | GReinSS wins where observations are information-poor / large. |
-| 23–26 min | **Notebook Demo 3** (graphs, pre-trained) | Show F1 ≈ 0.96 edge reconstruction. |
-| 26–29 min | RNA isoforms vs RSEM → CloMu/CNRein → recipe | The real-data payoff for this audience. |
-| 29–30 min | Recap / Q&A (run the toy cell if time) | The 4-line recipe; the toy confirms the denominator numerically. |
-
-## Live-demo tips
-
-- **Do a dry run** on the exact machine + kernel you'll present with.
-- Keep a pre-run copy of the notebook open in a second tab as a fallback.
-- Demo 1 loads the paper's set-reconstruction data (`|U|=100`, σ = 0.5, N = 100) with known
-  ground truth, so you can show real F1 gains over naive thresholding — the same API as the
-  README's set example.
-- Demo 2's *on-policy* run is **meant** to underperform thresholding — narrate it as a
-  sampling (needle-in-a-haystack) failure, then show the off-policy proposal fixing it.
-- If inference in Demo 3 feels slow, it's the 100k-trajectory sampler in `simpleInference`;
-  that's expected (~11 s) and worth narrating as "sampling states to solve the inference problem."
