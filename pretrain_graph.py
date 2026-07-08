@@ -21,7 +21,7 @@ import torch
 _orig = torch.load
 torch.load = lambda *a, **k: _orig(*a, **{**k, 'weights_only': False})
 
-from sharedGen import (GeneratorNet, gClass, train_model_off_policy,
+from sharedGen import (GraphGeneratorNet, gClass, train_model_off_policy,
                        sim1_log_calculate_pr_x_given_g, sim1_fast_multi)
 
 
@@ -90,7 +90,7 @@ np.savez_compressed(os.path.join(ASSETS, 'graph_truth.npz'), truth_vec)
 print("Saved observations and ground truth. obs", obs.shape, "truth", truth_vec.shape, flush=True)
 
 stateSize = NUM_NODES * (NUM_NODES - 1)  # 90
-model = GeneratorNet(stateSize, 50)
+model = GraphGeneratorNet(stateSize, 1, 50, endingBias=0)  # the actual GReinSS generator
 r = gClass()
 r.graphSize = stateSize
 r.observations_batch = obs
