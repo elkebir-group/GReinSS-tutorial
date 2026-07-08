@@ -61,6 +61,7 @@ html,body{margin:0;height:100%;background:#0c1420;overflow:hidden;font-family:-a
 #notes{position:fixed;left:0;right:0;bottom:0;max-height:42vh;overflow:auto;background:rgba(10,17,28,.97);color:#e8eef5;border-top:3px solid #FF5F05;padding:18px 26px;transform:translateY(100%);transition:transform .2s;box-sizing:border-box;}
 #notes.show{transform:translateY(0);}#notes h3{margin:0 0 8px;color:#ffb38a;font-size:16px;}
 #notes p{margin:0;font-size:15px;line-height:1.55;color:#dbe4ef;}#notes .meta{color:#7d8da0;font-size:12px;margin-top:10px;}
+#stage,.zone{cursor:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><defs><radialGradient id="g" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="rgb(255,200,180)"/><stop offset="0.35" stop-color="rgb(255,45,25)"/><stop offset="0.7" stop-color="rgb(230,0,0)" stop-opacity="0.45"/><stop offset="1" stop-color="rgb(220,0,0)" stop-opacity="0"/></radialGradient><filter id="b"><feGaussianBlur stdDeviation="1.6"/></filter></defs><circle cx="16" cy="16" r="11" fill="rgb(255,25,10)" fill-opacity="0.5" filter="url(%23b)"/><circle cx="16" cy="16" r="6" fill="url(%23g)"/></svg>') 16 16,pointer;}
 </style></head><body>
 <div id="stage"><img id="slide" alt="slide"></div>
 <div id="zL" class="zone" onclick="go(-1)"></div><div id="zR" class="zone" onclick="go(1)"></div>

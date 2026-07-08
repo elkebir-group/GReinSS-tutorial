@@ -18,3 +18,12 @@ assets/pretrain.log
 
 # generated marp input (assets/svg/*.svg spliced in by scripts/build_slides.py)
 slides.gen.md
+
+# generated deck outputs — rebuilt from slides.md by `just all`; pre-built copies
+# are attached to GitHub Releases instead of committed (they're large binaries that
+# churn on every edit). Run `just all` locally to regenerate.
+slides.html
+slides.gen.html
+slides.pdf
+speaker-notes.html
+speaker-notes.md

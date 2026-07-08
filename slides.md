@@ -16,6 +16,13 @@ Live-demo hand-offs are marked "→ NOTEBOOK".
 <!-- _class: title -->
 <!-- _paginate: false -->
 
+<!-- Laser pointer: replace the mouse arrow with a red dot on every slide of the interactive deck (just preview / marp --html). No effect in the PDF/PNG exports (static images have no cursor). -->
+<style>
+section, section * {
+  cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><defs><radialGradient id="g" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="rgb(255,200,180)"/><stop offset="0.35" stop-color="rgb(255,45,25)"/><stop offset="0.7" stop-color="rgb(230,0,0)" stop-opacity="0.45"/><stop offset="1" stop-color="rgb(220,0,0)" stop-opacity="0"/></radialGradient><filter id="b"><feGaussianBlur stdDeviation="1.6"/></filter></defs><circle cx="16" cy="16" r="11" fill="rgb(255,25,10)" fill-opacity="0.5" filter="url(%23b)"/><circle cx="16" cy="16" r="6" fill="url(%23g)"/></svg>') 16 16, pointer;
+}
+</style>
+
 # GReinSS
 
 ## Generative Modeling of Discrete Latent Structures via Dynamic Policy Gradients
@@ -251,7 +258,7 @@ Punchline: all four families miss the SAME target — directly maximizing the jo
 
 ---
 
-## Primer on reinforcement learning (RL)
+## Primer on reinforcement learning (RL) — fixed rewards
 
 > **Key question:** What actions should an agent take to maximize a reward signal? 
 
@@ -372,7 +379,7 @@ reward formula — that's the very next slide (the denominator is the whole tric
 
 ---
 
-## Dynamically-changing rewards
+## Dynamic rewards
 
 > Train with a policy gradient using the **dynamically rescaled reward** ${r(\tau)=\sum_{i=1}^{N}\Pr(X_i\mid\tau)/\Pr(X_i\mid\theta)}$
 
@@ -566,8 +573,6 @@ $$r(\tau)=\sum_{i=1}^{N}\frac{\Pr(X_i\mid\tau)}{\boxed{\Pr(X_i\mid\theta)}}\qqua
 
 - a **generator** for $S$ (action-by-action)
 - the likelihood **$\Pr(X\mid S)$**
-
-Everything else is generic.
 
 </div>
 </div>

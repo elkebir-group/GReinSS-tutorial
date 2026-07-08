@@ -1,5 +1,5 @@
 # GReinSS tutorial — slide build recipes
-# Requires: marp-cli, pandoc (+ xelatex for the notes PDF), python3
+# Requires: marp-cli, python3, gh (for `just release`)
 # The --html flag is mandatory: slides.md embeds raw HTML (<div> columns) and
 # inline <svg> figures that are escaped to literal text without it.
 
@@ -32,18 +32,31 @@ check: build
     rm -rf _chk && mkdir -p _chk
     {{marp}} {{gen}} {{flags}} --images png --image-scale 1 -o _chk/s.png
 
-# Extract speaker notes to speaker-notes.md/.html and build speaker-notes.pdf
+# Extract speaker notes into the speaker-notes.md + print-ready speaker-notes.html handout
 notes:
     python3 scripts/make_handout.py
-    sed -e 's/→/$\\rightarrow$/g' -e 's/ℝ/$\\mathbb{R}$/g' speaker-notes.md > .notes.tmp.md
-    pandoc .notes.tmp.md -o speaker-notes.pdf --pdf-engine=xelatex -V mainfont="Helvetica Neue"
-    rm -f .notes.tmp.md
 
 # Build every deliverable: PDF deck, offline HTML, and speaker-notes handout
 all: pdf html notes
 
-# Live preview in the browser (watches slides.gen.md; re-run `just build` after editing slides.md or an SVG)
+# Creates tag {{tag}} at the default-branch HEAD and attaches slides.html + slides.pdf.
+# Push commits first. Usage: just release v1.0
+# Build all deliverables, then publish them as a GitHub Release (needs `gh`, authenticated).
+release tag: all
+    #!/usr/bin/env bash
+    set -euo pipefail
+    gh release create "{{tag}}" \
+        --title "GReinSS tutorial {{tag}}" \
+        --generate-notes \
+        slides.html slides.pdf
+
+# Re-splices assets/svg into slides.gen.md on every save of slides.md or an SVG.
+# Live preview in the browser that reloads automatically as you edit slides.md.
 preview: build
+    #!/usr/bin/env bash
+    python3 scripts/build_slides.py --watch &
+    splicer=$!
+    trap 'kill $splicer 2>/dev/null' EXIT
     {{marp}} -p {{gen}} {{flags}}
 
 # Pre-train the graph model (~15 min on CPU) — writes assets/graph_*.{npz,pt}
@@ -52,4 +65,4 @@ pretrain epochs="3500":
 
 # Remove build scratch artifacts
 clean:
-    rm -rf {{pngdir}} _chk .notes.tmp.md {{gen}}
+    rm -rf {{pngdir}} _chk {{gen}}

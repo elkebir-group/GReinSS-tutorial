@@ -1,0 +1,50 @@
+name: Build & release slides
+
+# Builds the deck from slides.md and attaches the pre-built copies to a GitHub
+# Release, so the large generated files don't have to live in the repo.
+# Triggers on a version tag (e.g. `git tag v1.0 && git push --tags`) or manually.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write   # needed to create/update the Release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive   # the notebook's code/ submodule; harmless for the build
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install -g @marp-team/marp-cli
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'   # scripts/*.py use only the stdlib
+
+      - uses: extractions/setup-just@v2
+
+      - uses: browser-actions/setup-chrome@v1
+        id: chrome
+        with:
+          chrome-version: stable
+
+      # `just pdf html` runs build_slides.py -> marp (PDF) -> marp (PNGs) -> make_offline_html.py.
+      # marp needs Chrome for PDF/PNG rendering; CHROME_PATH points it at the one above.
+      - name: Build slides.pdf + offline slides.html
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+        run: just pdf html
+
+      - name: Attach to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            slides.html
+            slides.pdf

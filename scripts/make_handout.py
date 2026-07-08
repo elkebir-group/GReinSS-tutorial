@@ -73,5 +73,4 @@ page = ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
         '→ NOTEBOOK = live-demo hand-off</p></header>' + ''.join(cards) + '</body></html>')
 open(os.path.join(TUT, 'speaker-notes.html'), 'w').write(page)
 print(f'wrote speaker-notes.md and speaker-notes.html ({len(slides)} slides)')
-print('for a PDF:  pandoc speaker-notes.md -o speaker-notes.pdf --pdf-engine=xelatex '
-      '-V mainfont="Helvetica Neue"   (replace → with $\\rightarrow$ and ℝ with $\\mathbb{R}$ first)')
+print('for a PDF: open speaker-notes.html in a browser and Print -> Save as PDF')

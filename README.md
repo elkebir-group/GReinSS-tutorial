@@ -10,14 +10,19 @@ A tutorial: **slide deck** + **live Jupyter notebook** for GReinSS
 | `slides.md` | Marp slide deck (source). Speaker notes are in `<!-- HTML comments -->`; SVG figures are pulled in from `assets/svg/` via `<!-- include: -->` markers. |
 | `slides.pdf` | Compiled deck (regenerate with the command below). |
 | `slides.html` | **Self-contained** offline slide viewer (all images inlined; no network needed). Keys: `←`/`→` navigate, `N` toggle speaker notes, `F` fullscreen. |
-| `speaker-notes.pdf` | Printable speaker-notes handout (one block per slide). |
-| `speaker-notes.html` / `.md` | Same handout as styled HTML (print to PDF from a browser) and Markdown source. |
+| `speaker-notes.html` / `.md` | Speaker-notes handout (one block per slide) as print-ready styled HTML — print to PDF from a browser if you need paper — plus its Markdown source. |
 | `GReinSS_demo.ipynb` | The live notebook you run during the talk. |
 | `GReinSS_demo_executed.ipynb` | Pre-run copy with outputs — **fallback** if live execution fails. |
 | `pretrain_graph.py` | Generates the graph sim + ground truth and pre-trains the graph model. |
 | `assets/` | Paper figures (PNG) used by the deck + pre-trained graph model & data. `assets/svg/` holds the deck's inline SVG figures (spliced in at build time). |
 | `code/` | **Git submodule** → [`elkebir-group/GReinSS`](https://github.com/elkebir-group/GReinSS) (the library the notebook imports). |
 | `scripts/` | Helpers that regenerate `slides.html` and the `speaker-notes` handout. |
+
+> **Note.** The generated outputs — `slides.html`, `slides.pdf`, and `speaker-notes.{html,md}` —
+> are **not committed** (they're large binaries that churn on every edit; see `.gitignore`).
+> Build them locally with `just all`, or download pre-built `slides.html`/`slides.pdf` from the
+> [**Releases**](https://github.com/elkebir-group/GReinSS-tutorial/releases) page — the
+> `Build & release slides` workflow attaches them to each `v*` tag.
 
 ## Setup
 
@@ -70,8 +75,9 @@ Recipes live in the `justfile` (run `just` or `just --list` to see them all):
 just all        # rebuild slides.pdf + offline slides.html + speaker-notes handout
 just pdf        # just the PDF deck
 just html       # just the offline slides.html viewer
-just notes      # just the speaker-notes.{md,html,pdf} handout
+just notes      # just the speaker-notes.{md,html} handout
 just preview    # live preview in the browser, reloading on save
+just release v1.0  # build everything + publish a GitHub Release (via gh) with the artifacts
 ```
 
 Equivalent raw commands, if you don't have `just`:
@@ -92,6 +98,10 @@ into `slides.gen.md`, which is what marp actually renders — so the SVGs stay *
 and keep the deck's KaTeX fonts. Edit `slides.md` and the `assets/svg/*.svg` files;
 `slides.gen.md` is a generated artifact (git-ignored). Run marp on `slides.md`
 directly and the figures render as empty comments.
+
+`just preview` handles this splice live: it runs `build_slides.py --watch` (a stdlib
+mtime poller) alongside the marp preview, so saving `slides.md` or any `assets/svg/*.svg`
+re-splices `slides.gen.md` and marp reloads automatically — no manual `just build`.
 
 `slides.html` (self-contained offline viewer) and the `speaker-notes.*` handout are
 regenerated from `slides.md` with the helper scripts in `scripts/` (wrapped by the
