@@ -3,6 +3,9 @@
 A tutorial: **slide deck** + **live Jupyter notebook** for GReinSS
 (Generative Reinforcement Learning of Structured States).
 
+📽️ **View the slides online:** <https://elkebir-group.github.io/GReinSS-tutorial/> — hosted on
+GitHub Pages (interactive deck, PDF, and offline single-file viewer).
+
 ## Contents
 
 | File | What it is |
@@ -84,6 +87,7 @@ just html       # just the offline slides.html viewer
 just notes      # just the speaker-notes.{md,html} handout
 just preview    # live preview in the browser, reloading on save
 just release v1.0  # build everything + publish a GitHub Release (via gh) with the artifacts
+just pages       # build the site + publish it to GitHub Pages (gh-pages branch)
 ```
 
 Equivalent raw commands, if you don't have `just`:
@@ -114,6 +118,24 @@ regenerated from `slides.md` with the helper scripts in `scripts/` (wrapped by t
 `just html` / `just notes` recipes). Note: a plain `marp --html` export still fetches
 KaTeX math fonts from a CDN, so the committed `slides.html` instead embeds pixel-perfect
 rendered slide images (fully offline).
+
+## Publish to GitHub Pages
+
+The deck is served at **<https://elkebir-group.github.io/GReinSS-tutorial/>**. Deployment is
+done from a laptop via `just` (no CI step) — it builds the site and force-pushes it to the
+`gh-pages` branch:
+
+```bash
+just pages
+```
+
+This runs `just all`, also builds the interactive `slides.presenter.html`, assembles a
+`_site` (landing `pages/index.html` → `index.html`, the interactive deck → `deck.html`, the
+offline viewer → `offline.html`, `slides.pdf`, and `assets/`), and force-pushes an orphan
+commit to `gh-pages` (so that branch stays a single throwaway commit, no history bloat).
+
+**One-time setup:** repo **Settings → Pages → Source = "Deploy from a branch", branch =
+`gh-pages` / `root`.** Edit the landing page at `pages/index.html`.
 
 ## Suggested flow
 

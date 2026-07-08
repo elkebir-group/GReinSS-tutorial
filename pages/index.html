@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GReinSS Tutorial — NCI Spring School</title>
+<style>
+  :root {
+    --blue: #13294B; --orange: #FF5F05; --ink: #1b1f24; --muted: #5b6672;
+    --bg: #ffffff; --card: #f4f6f9; --border: #e1e6ee;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink: #e8ecf2; --muted: #9aa6b6; --bg: #0f141b; --card: #182230; --border: #2a3646; --blue: #7fa8dd; }
+  }
+  :root[data-theme="light"] { --ink:#1b1f24; --muted:#5b6672; --bg:#fff; --card:#f4f6f9; --border:#e1e6ee; --blue:#13294B; }
+  :root[data-theme="dark"]  { --ink:#e8ecf2; --muted:#9aa6b6; --bg:#0f141b; --card:#182230; --border:#2a3646; --blue:#7fa8dd; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink); line-height: 1.55;
+    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+    display: flex; min-height: 100vh; align-items: center; justify-content: center; padding: 32px;
+  }
+  main { width: 100%; max-width: 720px; }
+  .kicker { color: var(--orange); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; font-size: 13px; margin: 0 0 10px; }
+  h1 { color: var(--blue); font-size: clamp(28px, 6vw, 44px); margin: 0 0 6px; line-height: 1.1; }
+  .sub { color: var(--muted); font-size: clamp(15px, 3vw, 18px); margin: 0 0 4px; }
+  .authors { color: var(--ink); font-size: 15px; margin: 14px 0 28px; }
+  .authors b { color: var(--blue); }
+  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+  a.card {
+    display: block; text-decoration: none; color: inherit; background: var(--card);
+    border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; transition: transform .12s, border-color .12s;
+  }
+  a.card:hover { transform: translateY(-2px); border-color: var(--orange); }
+  a.card .t { font-weight: 700; color: var(--blue); font-size: 17px; margin: 0 0 3px; }
+  a.card .d { color: var(--muted); font-size: 13.5px; }
+  .primary { border-left: 4px solid var(--orange); }
+  footer { margin-top: 30px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--border); padding-top: 16px; }
+  footer a { color: var(--blue); }
+</style>
+</head>
+<body>
+<main>
+  <p class="kicker">NCI Spring School on Algorithmic Cancer Biology · Tutorial</p>
+  <h1>GReinSS</h1>
+  <p class="sub">Generative Reinforcement Learning of Structured States via Dynamic Policy Gradients</p>
+  <p class="authors">Stefan Ivanovic and <b>Mohammed El-Kebir</b> · University of Illinois Urbana-Champaign · <span style="color:var(--muted)">Ivanovic et al., ICML 2026</span></p>
+
+  <div class="grid">
+    <a class="card primary" href="deck.html">
+      <p class="t">View slides →</p>
+      <p class="d">Interactive deck — arrow keys to navigate, <kbd>F</kbd> for fullscreen.</p>
+    </a>
+    <a class="card" href="slides.pdf">
+      <p class="t">Download PDF</p>
+      <p class="d">Static, print-ready copy of the deck.</p>
+    </a>
+    <a class="card" href="offline.html">
+      <p class="t">Offline viewer</p>
+      <p class="d">Single self-contained HTML file — works with no network.</p>
+    </a>
+    <a class="card" href="https://github.com/elkebir-group/GReinSS-tutorial/blob/main/GReinSS_demo.ipynb">
+      <p class="t">Live notebook ↗</p>
+      <p class="d">The Jupyter notebook run during the talk (three demos).</p>
+    </a>
+  </div>
+
+  <footer>
+    Code &amp; live-demo notebook:
+    <a href="https://github.com/elkebir-group/GReinSS-tutorial">github.com/elkebir-group/GReinSS-tutorial</a>
+    · Questions? <a href="mailto:melkebir@illinois.edu">melkebir@illinois.edu</a>
+  </footer>
+</main>
+</body>
+</html>

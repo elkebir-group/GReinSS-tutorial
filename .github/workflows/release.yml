@@ -35,6 +35,14 @@ jobs:
         with:
           chrome-version: stable
 
+      # setup-chrome ships chrome-sandbox without the setuid-root bit, and marp only
+      # auto-adds --no-sandbox when running as root (GH runners aren't). Fix the perms so
+      # the SUID sandbox launches. See the SUID-sandbox error in earlier CI runs.
+      - name: Enable Chrome sandbox
+        run: |
+          sandbox="$(dirname '${{ steps.chrome.outputs.chrome-path }}')/chrome-sandbox"
+          if [ -f "$sandbox" ]; then sudo chown root:root "$sandbox" && sudo chmod 4755 "$sandbox"; fi
+
       # `just pdf html` runs build_slides.py -> marp (PDF) -> marp (PNGs) -> make_offline_html.py.
       # marp needs Chrome for PDF/PNG rendering; CHROME_PATH points it at the one above.
       - name: Build slides.pdf + offline slides.html
