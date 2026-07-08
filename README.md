@@ -12,7 +12,7 @@ A tutorial: **slide deck** + **live Jupyter notebook** for GReinSS
 | `slides.html` | **Self-contained** offline slide viewer (all images inlined; no network needed). Keys: `←`/`→` navigate, `N` toggle speaker notes, `F` fullscreen. |
 | `speaker-notes.html` / `.md` | Speaker-notes handout (one block per slide) as print-ready styled HTML — print to PDF from a browser if you need paper — plus its Markdown source. |
 | `GReinSS_demo.ipynb` | The live notebook you run during the talk. |
-| `GReinSS_demo_executed.ipynb` | Pre-run copy with outputs — **fallback** if live execution fails. |
+| `pretrain_setoff.py` | Prepares Demo 1 + Demo 2 set data and pre-trains the `\|U\|=1000` **off-policy** model. |
 | `pretrain_graph.py` | Generates the graph sim + ground truth and pre-trains the graph model. |
 | `assets/` | Paper figures (PNG) used by the deck + pre-trained graph model & data. `assets/svg/` holds the deck's inline SVG figures (spliced in at build time). |
 | `code/` | **Git submodule** → [`elkebir-group/GReinSS`](https://github.com/elkebir-group/GReinSS) (the library the notebook imports). |
@@ -57,14 +57,20 @@ jupyter notebook GReinSS_demo.ipynb      # or: jupyter lab
 
 Run cells top to bottom. Timings on a laptop CPU:
 
-- **Demo 1 (sets, trained live):** ~9 s to train + instant inference.
+- **Demo 1 (sets, `|U|=100`, trained live):** ~10 s to train + instant inference.
+- **Demo 2 (scaling to `|U|=1000`, off-policy):** a short live on-policy run that
+  *deliberately underperforms*, then loads the pre-trained off-policy model (`assets/setoff_model.pt`).
+- **Demo 3 (graphs, pre-trained):** inference ~11 s (loads `assets/graph_model.pt`).
 - **Intuition (toy):** instant.
-- **Demo 2 (graphs, pre-trained):** inference ~11 s (loads `assets/graph_model.pt`).
 
-### Re-generate the pre-trained graph model (optional)
+### Re-generate the pre-trained models (optional)
 
 ```bash
-EPOCHS=3500 python3 pretrain_graph.py    # ~15 min on CPU; writes assets/graph_*.{npz,pt}
+python3 pretrain_setoff.py                # Demo 1 + Demo 2 data & off-policy model
+                                          #   writes assets/set100_*.npz + assets/setoff_*.{npz,pt}
+                                          #   (EPOCHS=1500 default)
+EPOCHS=3500 python3 pretrain_graph.py     # Demo 3 graph model; ~15 min on CPU
+                                          #   writes assets/graph_*.{npz,pt}
 ```
 
 ## Compile the slides
@@ -116,18 +122,21 @@ rendered slide images (fully offline).
 | 0–4 min | Motivation → two problems | Frame with cancer states: phylogenies, CNVs, isoforms. |
 | 4–9 min | Why usual tools fail → the idea → **the one equation** | The theorem is the crux; keep to intuition. |
 | 9–12 min | Toy intuition slide | Denominator = "reward shrinks as it succeeds." |
-| 12–18 min | **Notebook Demo 1** (sets, live) | Train live; show likelihood curve + denoising vs thresholding. |
-| 18–21 min | Simulation results | GReinSS wins where observations are information-poor / large. |
-| 21–25 min | **Notebook Demo 2** (graphs) + toy cell | Show F1 0.96 reconstruction; run the toy PG-vs-GReinSS cell. |
-| 25–29 min | RNA isoforms vs RSEM → CloMu/CNRein → recipe | The real-data payoff for this audience. |
-| 29–30 min | Recap / Q&A | The 4-line recipe. |
+| 12–17 min | **Notebook Demo 1** (sets `\|U\|=100`, live) | Train live; show likelihood curve + denoising vs thresholding. |
+| 17–20 min | Off-policy slide → **Notebook Demo 2** (scaling to `\|U\|=1000`) | Same recipe collapses on-policy; the observation-biased off-policy proposal rescues it (F1 ≈ 0.94). |
+| 20–23 min | Scoreboard → simulation results | GReinSS wins where observations are information-poor / large. |
+| 23–26 min | **Notebook Demo 3** (graphs, pre-trained) | Show F1 ≈ 0.96 edge reconstruction. |
+| 26–29 min | RNA isoforms vs RSEM → CloMu/CNRein → recipe | The real-data payoff for this audience. |
+| 29–30 min | Recap / Q&A (run the toy cell if time) | The 4-line recipe; the toy confirms the denominator numerically. |
 
 ## Live-demo tips
 
 - **Do a dry run** on the exact machine + kernel you'll present with.
-- Keep `GReinSS_demo_executed.ipynb` open in a second tab as a fallback.
-- Demo 1 uses a *self-generated* set simulation with known ground truth (universe 20,
-  σ = 0.5, module structure), so you can show real F1 gains over naive thresholding
-  (~0.91 vs ~0.80) — the same API as the README's set example.
-- If inference in Demo 2 feels slow, it's the 100k-trajectory sampler in `simpleInference`;
+- Keep a pre-run copy of the notebook open in a second tab as a fallback.
+- Demo 1 loads the paper's set-reconstruction data (`|U|=100`, σ = 0.5, N = 100) with known
+  ground truth, so you can show real F1 gains over naive thresholding — the same API as the
+  README's set example.
+- Demo 2's *on-policy* run is **meant** to underperform thresholding — narrate it as a
+  sampling (needle-in-a-haystack) failure, then show the off-policy proposal fixing it.
+- If inference in Demo 3 feels slow, it's the 100k-trajectory sampler in `simpleInference`;
   that's expected (~11 s) and worth narrating as "sampling states to solve the inference problem."

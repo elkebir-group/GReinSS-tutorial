@@ -521,6 +521,8 @@ RIGHT (rescaled): Thm 1 makes this maximize the data likelihood L = Pr(X1|θ)·P
 (.5 p1)(.3 p2 + .2 p3). τ3 is dominated by τ2 for X2 (.2<.3) so p3=0; then L = .15 p1 p2 with
 p1+p2=1, maximized at p1=p2=.5 → θ*=(.5,.5,0), L=.25×.15=.0375 (the global optimum).
 Punchline: the denominator = automatic load-balancing across observations.
+(This exact 3-state example is reproduced numerically in the notebook's FINAL section,
+"Intuition — why the denominator matters" — mention it now, run it live at the recap if time.)
 -->
 
 ---
@@ -672,6 +674,41 @@ Keep this slide brief unless the audience asks.
 
 ---
 
+<!-- _class: demo -->
+
+## → NOTEBOOK · Demo 2: Scaling up — off-policy to the rescue
+
+Keep Demo 1's **exact recipe**, make the universe **10× larger**: $|\mathcal U|=1000$, ~180-of-1000 sets.
+
+<div class="cols">
+<div>
+
+**On-policy collapses.** Blindly sampling $\Pr(S\mid\theta)$ essentially never draws a ~180-element needle — no reward signal, so training stalls **below** naive thresholding. A *sampling* failure, not a modelling one.
+
+**Off-policy fixes it.** Bias each "add element $j$" by $(X_{i,j}-\tfrac12)/\sigma^2$ (Theorem 2); importance sampling keeps the gradient unbiased.
+
+</div>
+<div>
+
+**Watch for:**
+- on-policy median $F_1$ *below* thresholding
+- off-policy median $F_1=\mathbf{0.938}$
+- the same sets, now recovered
+
+</div>
+</div>
+
+<!--
+SWITCH TO JUPYTER (Demo 2). Same set problem as Demo 1, universe 10x larger (|U|=1000).
+First run the unchanged on-policy recipe live: it scores WORSE than naive thresholding —
+because sampling a ~180-of-1000 set by chance essentially never happens (needle in a
+haystack), so the gradient sees no signal. Then flip on the observation-biased off-policy
+proposal (we load the pre-trained model) and the sets are recovered. This is the concrete
+payoff of Theorem 2 on the previous slide — the demo the theory was setting up.
+-->
+
+---
+
 ## The scoreboard — who actually maximizes the likelihood?
 
 | Method | Family | Max. $\prod_i\Pr(X_i\mid\theta)$? |
@@ -736,7 +773,7 @@ the closest RL cousins (naive PG, GFlowNet) fail. The reward rescaling is the di
 
 <!-- _class: demo -->
 
-## → NOTEBOOK · Demo 2: Graph inference (pre-trained)
+## → NOTEBOOK · Demo 3: Graph inference (pre-trained)
 
 Latent **directed graphs** from start/end points of $k$ absorbing random walks.
 
@@ -760,7 +797,7 @@ We **load a pre-trained policy**, run inference, and score edge-recovery $F_1$ a
 </div>
 
 <!--
-SWITCH TO JUPYTER (second section). Heavier model, so we ship a pre-trained checkpoint.
+SWITCH TO JUPYTER (Demo 3). Heavier model, so we ship a pre-trained checkpoint.
 Show: load model → simpleInference → compare predicted adjacency to the ground-truth graph
 we saved during pre-training → report F1 and visualize one graph. This mirrors the paper's
 Fig on graph inference but on your own generated instance with known truth.
