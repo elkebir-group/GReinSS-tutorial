@@ -648,63 +648,125 @@ structure shared across observations, beating per-pixel rounding.
 
 ---
 
-## Off-policy learning (when on-policy is too slow)
+<!-- _class: demo -->
 
-If sampling $\Pr(\tau\mid\theta)$ rarely produces states that explain any $X_i$, learning stalls.
+## → NOTEBOOK · Demo 2: Off-policy learning at scale
 
-**Sample where the data says to look** — bias toward the Bayes posterior:
+<style scoped>
+.cols { align-items: start; gap: 30px; margin: 12px 0; }
+.cols .theorem { margin: 10px 0; }
+.cols .theorem .katex-display { margin: 4px 0; }
+blockquote { margin: 10px 0 0; }
+</style>
+
+<div class="cols">
+<div>
+
+With a **larger, dispersed** state space: sampling $\Pr(S\mid\theta)$ rarely hits a state explaining any $X_i$, so most trajectories earn no reward and learning stalls.
+
+<!--**Watch for:** on-policy median $F_1$ *below* thresholding · off-policy median $F_1=\mathbf{0.938}$ · the same sets recovered.-->
+
+
+![w:365](assets/onpolicy-scaling.png)
+
+
+
+</div>
+<div>
+
+**Off-policy sampling:** If the policy rarely samples states explaining any $X_i$, learning stalls — **sample where the data says to look:**
 
 <div class="theorem">
 
 **Theorem 2 (Optimal off-policy proposal).** *The unbiased, variance-minimizing sampling proposal is*
 
-$$q(\tau\mid X_{1:N},\theta)=\tfrac1N\sum_{i=1}^{N}\Pr(\tau\mid X_i,\theta),\qquad \Pr(\tau\mid X_i,\theta)=\frac{\Pr(X_i\mid\tau)\,\Pr(\tau\mid\theta)}{\Pr(X_i\mid\theta)}.$$
+$$q(\tau\mid X_{1:N},\theta)=\tfrac1N\textstyle\sum_{i=1}^{N}\Pr(\tau\mid X_i,\theta)$$
+
+$$\Pr(\tau\mid X_i,\theta)=\frac{\Pr(X_i\mid\tau)\,\Pr(\tau\mid\theta)}{\Pr(X_i\mid\theta)}$$
 
 </div>
 
-> Importance sampling keeps the gradient correct. *In cancer apps, a cheap heuristic (e.g. CNNaive in CNRein) seeds plausible states.*
+
+</div>
+</div>
+
+
+> **Can't sample $q$ exactly** → sample **biased toward each observation** (for sets: favor element $j$ by $(X_{i,j}-\tfrac12)/\sigma^2$), then **importance-weight** to stay unbiased.
 
 <!--
-Practical must-have for hard problems. Instead of blindly sampling from the policy, we
-tilt sampling toward states that actually fit each observation — provably the best proposal.
-In our biology applications this is where domain knowledge enters: a fast classical method
-proposes candidate states, and GReinSS refines the distribution over them.
-Keep this slide brief unless the audience asks.
+MERGED: the off-policy theorem and the Demo 2 handoff on one slide.
+RIGHT — the concept: instead of blindly sampling the policy, tilt sampling toward states
+that actually fit each observation (Theorem 2 = provably the best, variance-minimizing
+proposal); importance sampling keeps the gradient unbiased. In our biology apps this is
+where domain knowledge enters — a fast classical method (e.g. CNNaive in CNRein) proposes
+candidate states and GReinSS refines the distribution over them.
+LEFT — SWITCH TO JUPYTER (Demo 2): same set problem as Demo 1 but |U|=1000. Run the
+unchanged on-policy recipe live and it scores WORSE than naive thresholding — sampling a
+~180-of-1000 set by chance essentially never happens (needle in a haystack), so the gradient
+sees no signal. Then flip on the observation-biased off-policy proposal (load the pre-trained
+model) and the sets are recovered. The theorem on the right is exactly what the demo shows.
+
+THEOREM 2 IN PLAIN TERMS (if asked): "sample the states the data points you toward, not
+blindly from your model." Read the formula inside-out: the per-observation posterior
+Pr(τ|Xi,θ) = Bayes' rule = the policy prior Pr(τ|θ) REWEIGHTED by how well each trajectory
+explains Xi (the likelihood Pr(Xi|τ)) — so it concentrates on trajectories that are BOTH
+plausible under the model AND consistent with Xi ("where Xi's answer lives"). The (1/N)Σi
+averages those per-observation posteriors — spend equal sampling effort on every observation.
+Why optimal: the gradient's mass sits on data-explaining trajectories; on-policy sampling is
+blind to the data and lands almost everywhere else (zero reward, noisy estimate), whereas
+aiming q at this posterior puts samples exactly where the gradient has mass = "variance-
+minimizing" (fewest wasted samples). "Unbiased" = importance sampling still corrects the
+reweighting, so smarter sampling does NOT bias the objective. The catch: you can't sample
+this posterior exactly (that's basically the inference problem), so you APPROXIMATE it with a
+cheap nudge — (Xij-1/2)/sigma^2 for the set demo, CNNaive in CNRein. The theorem tells you
+what target those heuristics should aim at, and promises any reasonable one keeps the gradient
+correct. One-liner: "sample from what the data says the state probably is — averaged over all
+observations — and you estimate the same gradient with far fewer wasted samples."
 -->
 
 ---
 
-<!-- _class: demo -->
+## The off-policy update in full
 
-## → NOTEBOOK · Demo 2: Scaling up — off-policy to the rescue
+<style scoped>
+.katex-display { margin: 10px 0; }
+.lead { margin: 10px 0 0; }
+blockquote { margin-top: 16px; font-size: 22px; }
+</style>
 
-Keep Demo 1's **exact recipe**, make the universe **10× larger**: $|\mathcal U|=1000$, ~180-of-1000 sets.
+<div class="lead">
 
-<div class="cols">
-<div>
-
-**On-policy collapses.** Blindly sampling $\Pr(S\mid\theta)$ essentially never draws a ~180-element needle — no reward signal, so training stalls **below** naive thresholding. A *sampling* failure, not a modelling one.
-
-**Off-policy fixes it.** Bias each "add element $j$" by $(X_{i,j}-\tfrac12)/\sigma^2$ (Theorem 2); importance sampling keeps the gradient unbiased.
-
-</div>
-<div>
-
-**Watch for:**
-- on-policy median $F_1$ *below* thresholding
-- off-policy median $F_1=\mathbf{0.938}$
-- the same sets, now recovered
+**Exact — unbiased for the data log-likelihood gradient, for *any* proposal $q$:**
 
 </div>
+
+$$\nabla_\theta\log\Pr(X_{1:N}\mid\theta)=\mathbb E_{\tau\sim q}\big[\,w(\tau)\,r(\tau)\,\nabla_\theta\log\Pr(\tau\mid\theta)\,\big]$$
+
+$$w(\tau)=\frac{\Pr(\tau\mid\theta)}{q(\tau)}=\prod_t\frac{\pi_\theta(a_t\mid s_t)}{q(a_t\mid s_t)}\qquad r(\tau)=\sum_{i=1}^{N}\frac{\Pr(X_i\mid\tau)}{\Pr(X_i\mid\theta)}$$
+
+<div class="lead">
+
+**Batch estimate** over $\tau_1,\dots,\tau_M\sim q$ &nbsp;<span class="small">(the denominator $\Pr(X_i\mid\theta)$ in $r$ is re-estimated each batch)</span>**:**
+
 </div>
+
+$$\widehat g=\frac1M\sum_{m=1}^{M} w(\tau_m)\,r(\tau_m)\,\nabla_\theta\log\Pr(\tau_m\mid\theta)\qquad \Pr(X_i\mid\theta)\approx\frac1M\sum_{m=1}^{M} w(\tau_m)\,\Pr(X_i\mid\tau_m)$$
+
+> **On-policy** is the special case $q=\Pr(\tau\mid\theta)\Rightarrow w\equiv1$ (the training-loop update). &nbsp;Optionally **self-normalize** — divide by $\sum_m w(\tau_m)$ — to cut variance.
 
 <!--
-SWITCH TO JUPYTER (Demo 2). Same set problem as Demo 1, universe 10x larger (|U|=1000).
-First run the unchanged on-policy recipe live: it scores WORSE than naive thresholding —
-because sampling a ~180-of-1000 set by chance essentially never happens (needle in a
-haystack), so the gradient sees no signal. Then flip on the observation-biased off-policy
-proposal (we load the pre-trained model) and the sets are recovered. This is the concrete
-payoff of Theorem 2 on the previous slide — the demo the theory was setting up.
+BACKUP / detail slide (skip in a tight 30-min run; good for Q&A). This is the full off-policy
+estimator behind Demo 2. Three moving parts, all from earlier slides:
+- w(τ)=Pr(τ|θ)/q(τ): the IMPORTANCE WEIGHT that undoes sampling from q instead of the policy —
+  a product of per-step ratios π_θ(a|s)/q(a|s), computed for free during the biased rollout.
+- r(τ): the DYNAMIC reward from Theorem 1 — how well τ explains each Xi, each rescaled by that
+  observation's total probability Pr(Xi|θ) (the load-balancing denominator).
+- Pr(Xi|θ): a scalar per observation, itself an off-policy expectation, so it's the
+  importance-weighted batch average of Pr(Xi|τ) — re-estimated every iteration.
+Punchline: set q=Pr(τ|θ) (w≡1) and this collapses EXACTLY to the on-policy GReinSS loop; the
+only change for off-policy is drawing τ from q and multiplying by w. Any valid q keeps ĝ
+unbiased; Theorem 2's optimal q just minimizes its variance. Self-normalizing (÷ Σ w) trades a
+little bias for much lower variance.
 -->
 
 ---
