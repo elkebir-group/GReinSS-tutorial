@@ -622,6 +622,8 @@ def log_pr_x_given_g(state, obs):
 </div>
 <div>
 
+**Shared structure:** Each $S^*_i$ = a union of a few reusable **subsets**, so a shared $\Pr(S\mid\theta)$ pools across observations.
+
 **Watch for:**
 - median $\log\Pr(X_i\mid\theta)$ climbing to ~0
 - recovered sets vs. thresholding the noise
@@ -662,7 +664,7 @@ blockquote { margin: 10px 0 0; }
 <div class="cols">
 <div>
 
-With a **larger, dispersed** state space: sampling $\Pr(S\mid\theta)$ rarely hits a state explaining any $X_i$, so most trajectories earn no reward and learning stalls.
+With a **larger, dispersed** state space: sampling $\Pr(\tau\mid\theta)$ rarely hits a terminal state $S(\tau)$ explaining any $X_i$, so most trajectories earn no reward and learning stalls.
 
 <!--**Watch for:** on-policy median $F_1$ *below* thresholding · off-policy median $F_1=\mathbf{0.938}$ · the same sets recovered.-->
 
@@ -678,9 +680,9 @@ With a **larger, dispersed** state space: sampling $\Pr(S\mid\theta)$ rarely hit
 
 <div class="theorem">
 
-**Theorem 2 (Optimal off-policy proposal).** *The unbiased, variance-minimizing sampling proposal is*
+**Theorem 2 (Optimal off-policy proposal).** *The unbiased, variance-minimizing sampling proposal is $q^\star$:*
 
-$$q(\tau\mid X_{1:N},\theta)=\tfrac1N\textstyle\sum_{i=1}^{N}\Pr(\tau\mid X_i,\theta)$$
+$$q^\star(\tau\mid X_{1:N},\theta)=\tfrac1N\textstyle\sum_{i=1}^{N}\Pr(\tau\mid X_i,\theta)$$
 
 $$\Pr(\tau\mid X_i,\theta)=\frac{\Pr(X_i\mid\tau)\,\Pr(\tau\mid\theta)}{\Pr(X_i\mid\theta)}$$
 
@@ -691,7 +693,7 @@ $$\Pr(\tau\mid X_i,\theta)=\frac{\Pr(X_i\mid\tau)\,\Pr(\tau\mid\theta)}{\Pr(X_i\
 </div>
 
 
-> **Can't sample $q$ exactly** → sample **biased toward each observation** (for sets: favor element $j$ by $(X_{i,j}-\tfrac12)/\sigma^2$), then **importance-weight** to stay unbiased.
+> **$q^\star$ is intractable** → sample a tractable **$q\approx q^\star$** (for sets: favor element $j$ by $(X_{i,j}-\tfrac12)/\sigma^2$), then **reweight** by $\Pr(\tau\mid\theta)/q(\tau)$.
 
 <!--
 MERGED: the off-policy theorem and the Demo 2 handoff on one slide.
@@ -729,9 +731,9 @@ observations — and you estimate the same gradient with far fewer wasted sample
 ## The off-policy update in full
 
 <style scoped>
-.katex-display { margin: 10px 0; }
-.lead { margin: 10px 0 0; }
-blockquote { margin-top: 16px; font-size: 22px; }
+h2 { margin-bottom: 6px; }
+.katex-display { margin: 2px 0; }
+.lead { margin: 4px 0 0; }
 </style>
 
 <div class="lead">
@@ -746,13 +748,25 @@ $$w(\tau)=\frac{\Pr(\tau\mid\theta)}{q(\tau)}=\prod_t\frac{\pi_\theta(a_t\mid s_
 
 <div class="lead">
 
+**Set problem** — pick an observation $i$ uniformly, then bias each step by its log-odds:
+
+</div>
+
+$$q(a_t=\text{add }j\mid s_t)=\operatorname{softmax}_j\!\Big(\log\pi_\theta(\text{add }j\mid s_t)+\tfrac{X_{i,j}-\frac12}{\sigma^2}\Big)$$
+
+<div class="lead">
+
 **Batch estimate** over $\tau_1,\dots,\tau_M\sim q$ &nbsp;<span class="small">(the denominator $\Pr(X_i\mid\theta)$ in $r$ is re-estimated each batch)</span>**:**
 
 </div>
 
 $$\widehat g=\frac1M\sum_{m=1}^{M} w(\tau_m)\,r(\tau_m)\,\nabla_\theta\log\Pr(\tau_m\mid\theta)\qquad \Pr(X_i\mid\theta)\approx\frac1M\sum_{m=1}^{M} w(\tau_m)\,\Pr(X_i\mid\tau_m)$$
 
-> **On-policy** is the special case $q=\Pr(\tau\mid\theta)\Rightarrow w\equiv1$ (the training-loop update). &nbsp;Optionally **self-normalize** — divide by $\sum_m w(\tau_m)$ — to cut variance.
+<div class="lead">
+
+**On-policy:** $q=\Pr(\tau\mid\theta)\Rightarrow w\equiv1$. &nbsp;**Self-normalize** (divide by $\textstyle\sum_m w(\tau_m)$) to cut variance.
+
+</div>
 
 <!--
 BACKUP / detail slide (skip in a tight 30-min run; good for Q&A). This is the full off-policy
@@ -837,15 +851,22 @@ the closest RL cousins (naive PG, GFlowNet) fail. The reward rescaling is the di
 
 ## → NOTEBOOK · Demo 3: Graph inference (pre-trained)
 
-Latent **directed graphs** from start/end points of $k$ absorbing random walks.
+<style scoped>
+.cols { align-items: start; margin: 6px 0 0; }
+.cartoon { margin: 0 auto; text-align: center; }
+.cartoon img { width: 560px; max-width: 100%; height: auto; }
+.ccap { font-size: 18px; color: var(--muted); text-align: center; margin: 2px auto 0; max-width: 960px; }
+.ccap b { color: var(--ill-blue); font-weight: 700; }
+</style>
+
+Reconstruct latent **directed graphs** from start/end points of $k$ random walks. *Pre-trained.*
 
 <div class="cols">
 <div>
 
-**State** = 90 possible directed edges (10 nodes).
-**$\Pr(X\mid S)$** from the shifted-Laplacian $(L+I)^{-1}$ random-walk model.
+**Problem.** $S^*_i$ = directed graph (10 nodes, 90 edges); we see only the $(v,w)$ **endpoints** of $k$ absorbing walks. $\Pr(X\mid S)$: shifted-Laplacian $(L+I)^{-1}$.
 
-We **load a pre-trained policy**, run inference, and score edge-recovery $F_1$ against ground-truth graphs.
+**Shared structure:** Each $S^*_i$ = a random **thresholded subgraph** of one **Erdős–Rényi** $(p{=}\tfrac12)$ base graph.
 
 </div>
 <div>
@@ -853,16 +874,31 @@ We **load a pre-trained policy**, run inference, and score edge-recovery $F_1$ a
 **Watch for:**
 - training likelihood curve (pre-computed)
 - a reconstructed graph $\hat S_i$ vs. true $S^*_i$
-- per-graph $F_1$ distribution
+- per-graph $F_1$ (median $\approx 0.97$)
 
 </div>
+</div>
+
+<div class="cartoon">
+
+![](assets/graph-cartoon.png)
+
+</div>
+
+<div class="ccap">
+
+<b><span style="color:#13294B">&#9679;</span> latent graph $S^*_i$</b> &nbsp; <b><span style="color:#FF5F05">&#9679;</span> GReinSS $\hat S_i$</b> &nbsp;—&nbsp; dashed = observed (start→end); paths never seen.
 </div>
 
 <!--
 SWITCH TO JUPYTER (Demo 3). Heavier model, so we ship a pre-trained checkpoint.
 Show: load model → simpleInference → compare predicted adjacency to the ground-truth graph
-we saved during pre-training → report F1 and visualize one graph. This mirrors the paper's
-Fig on graph inference but on your own generated instance with known truth.
+we saved during pre-training → report F1 and visualize one graph.
+Ground-truth model: a single Erdős–Rényi base graph (edge prob 1/2), edge weights ~U(1/4,1);
+each latent graph S*_i keeps the base edges whose weight exceeds a per-graph threshold ~U(0,1)
+— so the N graphs share structure (the analog of the set "modules"). Observations = (start,end)
+node pairs of k absorbing random walks; Pr(X|S) from the shifted-Laplacian (L+I)^{-1}. The
+cartoon is a 6-node schematic; the real instance is 10 nodes / 90 possible directed edges.
 -->
 
 ---
