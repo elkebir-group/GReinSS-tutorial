@@ -24,6 +24,7 @@ slides.gen.md
 # churn on every edit). Run `just all` locally to regenerate.
 slides.html
 slides.gen.html
+slides.presenter.html
 slides.pdf
 speaker-notes.html
 speaker-notes.md
