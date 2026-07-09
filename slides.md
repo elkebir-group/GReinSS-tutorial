@@ -52,6 +52,8 @@ University of Illinois Urbana-Champaign
 <style scoped>
 .setup { margin-bottom: 0; }
 blockquote { margin: 24px 0; }
+.cols3 .exfig { height: 56px; margin: 8px auto; overflow: visible; }
+.cols3 .exfig img { max-height: 56px !important; height: auto !important; width: auto !important; }
 </style>
 
 <div class="cols3 setup">
@@ -627,6 +629,46 @@ def log_pr_x_given_g(state, obs):
 * SWITCH TO JUPYTER.
 * Load obs → Pr(X|S) one line → build net → train ~200 epochs → infer → vs thresholding.
 * Punchline: shared structure denoises, beats per-pixel rounding.
+-->
+
+---
+
+## Neural network policy $\pi_\theta$ for the set reconstruction problem
+
+<style scoped>
+section { background: #fff4ee; padding-top: 38px; }
+.lead blockquote { margin-bottom: 2px; }
+.netfig { text-align: center; margin: 2px auto 0; }
+.netfig svg { width: 1010px; max-width: 100%; height: auto; }
+.cap { text-align: center; }
+.cap blockquote { margin-top: 6px; }
+</style>
+
+<div class="lead">
+
+> **1-hidden-layer MLP** — `Linear(`$|\mathcal U|\!\to\!64$`)` → LeakyReLU → `Linear(`$64\!\to\!|\mathcal U|{+}1$`)` — run once **per step**: read the partial set, then **add an element** or **stop**.
+
+</div>
+
+<div class="netfig">
+
+<!-- include: assets/svg/set-net-cartoon.svg -->
+
+</div>
+
+<div class="cap">
+
+> $|\mathcal U|$ add-logits **+ one stop**; weights **shared across steps**. 
+> Illegal (already-added) moves masked. &nbsp;$\Pr(S\mid\theta)=\textstyle\sum_{\tau:\,S(\tau)=S}\prod_t \pi_\theta(a_t\mid s_t)$
+
+</div>
+
+<!--
+* The "generator" you supply is this small MLP — one hidden layer (64 units).
+* Each step: read the current partial set (0/1 vector) → U+1 logits: add element j, or stop.
+* Illegal moves (re-adding an element) are masked to -inf before the softmax → π_θ(a_t | s_t).
+* No recurrence — same weights every step; the grown set is fed back in (the dashed loop). Rolling out defines Pr(S|θ).
+* Keep it on sets; the point is how simple the generator is — the reward does the work.
 -->
 
 ---
