@@ -96,8 +96,7 @@ just html       # just the offline slides.html viewer
 just notes      # just the speaker-notes.{md,html} handout
 just notebook   # execute GReinSS_demo.ipynb in place, outputs embedded (ambient jupyter/kernel)
 just preview    # live preview in the browser, reloading on save
-just release v1.0  # build everything + publish a GitHub Release (via gh) with the artifacts
-just pages       # build the site + publish it to GitHub Pages (gh-pages branch)
+just release v1.1  # publish: GitHub Release (via gh) + deploy the site to GitHub Pages, in one step
 ```
 
 Equivalent raw commands, if you don't have `just`:
@@ -129,20 +128,25 @@ regenerated from `slides.md` with the helper scripts in `scripts/` (wrapped by t
 KaTeX math fonts from a CDN, so the committed `slides.html` instead embeds pixel-perfect
 rendered slide images (fully offline).
 
-## Publish to GitHub Pages
+## Publish a version (Release + GitHub Pages)
 
-The deck is served at **<https://elkebir-group.github.io/GReinSS-tutorial/>**. Deployment is
-done from a laptop via `just` (no CI step) — it builds the site and force-pushes it to the
-`gh-pages` branch:
+Publishing is a single laptop command — `just release` cuts a **GitHub Release** *and*
+deploys the live site to **GitHub Pages** from the same freshly built artifacts. Push your
+commits first, then:
 
 ```bash
-just pages
+just release v1.1
 ```
 
-This runs `just all`, also builds the interactive `slides.presenter.html`, assembles a
-`_site` (landing `pages/index.html` → `index.html`, the interactive deck → `deck.html`, the
-offline viewer → `offline.html`, `slides.pdf`, and `assets/`), and force-pushes an orphan
-commit to `gh-pages` (so that branch stays a single throwaway commit, no history bloat).
+This runs `just all`, builds the interactive `slides.presenter.html`, then:
+
+1. **Release** — creates tag `v1.1` and attaches `slides.html`, `slides.pdf`, and the executed
+   `GReinSS_demo.ipynb` (the tag push also triggers the `Build & release slides` CI workflow,
+   which re-attaches the same deck files — a harmless overlap).
+2. **Pages** — assembles a site (landing `pages/index.html` → `index.html`, the interactive
+   deck → `deck.html`, the offline viewer → `offline.html`, `slides.pdf`, and `assets/`) and
+   force-pushes an orphan commit to `gh-pages`, so that branch stays one throwaway commit
+   (no history bloat). Served at **<https://elkebir-group.github.io/GReinSS-tutorial/>**.
 
 **One-time setup:** repo **Settings → Pages → Source = "Deploy from a branch", branch =
 `gh-pages` / `root`.** Edit the landing page at `pages/index.html`.

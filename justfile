@@ -48,16 +48,35 @@ notebook:
         --ExecutePreprocessor.timeout=1200 \
         GReinSS_demo.ipynb
 
-# Creates tag {{tag}} at the default-branch HEAD and attaches slides.html + slides.pdf + the executed notebook.
-# Push commits first. Usage: just release v1.0
-# Build all deliverables, then publish them as a GitHub Release (needs `gh`, authenticated).
+# Publish a version: build everything, cut a GitHub Release with the artifacts, AND deploy the
+# site to gh-pages — one command for both. Push commits first. Usage: just release v1.1
+# Needs `gh` authenticated; force-pushes an orphan gh-pages commit (no history bloat).
+# One-time Pages setup: repo Settings -> Pages -> Source = "Deploy from a branch", branch = gh-pages / root.
 release tag: all
     #!/usr/bin/env bash
     set -euo pipefail
+    # Interactive bespoke deck for the live site (not part of `just all`) — references assets/ by relative path.
+    {{marp}} {{gen}} {{flags}} -o slides.presenter.html
+    # 1) GitHub Release with the pre-built deck + executed notebook.
     gh release create "{{tag}}" \
         --title "GReinSS tutorial {{tag}}" \
         --generate-notes \
         slides.html slides.pdf GReinSS_demo.ipynb
+    # 2) Deploy the site to the gh-pages branch (orphan commit each run).
+    remote=$(git remote get-url origin)
+    site=$(mktemp -d)
+    cp pages/index.html      "$site/index.html"
+    cp slides.presenter.html "$site/deck.html"
+    cp slides.html           "$site/offline.html"
+    cp slides.pdf            "$site/slides.pdf"
+    cp -R assets             "$site/assets"
+    touch "$site/.nojekyll"   # serve paths verbatim; skip Jekyll processing
+    git -C "$site" init -q -b gh-pages
+    git -C "$site" add -A
+    git -C "$site" -c user.name="pages-deploy" -c user.email="pages@local" commit -qm "Deploy slides to GitHub Pages ({{tag}})"
+    git -C "$site" push -f "$remote" gh-pages
+    rm -rf "$site"
+    echo "Released {{tag}} and deployed to gh-pages. If Pages isn't enabled yet: Settings -> Pages -> branch gh-pages / root."
 
 # Re-splices assets/svg into slides.gen.md on every save of slides.md or an SVG.
 # Live preview in the browser that reloads automatically as you edit slides.md.
@@ -71,29 +90,6 @@ preview: build
 # Pre-train the graph model (~15 min on CPU) — writes assets/graph_*.{npz,pt}
 pretrain epochs="3500":
     EPOCHS={{epochs}} python3 pretrain_graph.py
-
-# Build the site and publish it to the gh-pages branch (GitHub Pages).
-# One-time setup: repo Settings -> Pages -> Source = "Deploy from a branch", branch = gh-pages / root.
-# Force-pushes an orphan commit each run, so gh-pages carries no history bloat.
-pages: all
-    #!/usr/bin/env bash
-    set -euo pipefail
-    remote=$(git remote get-url origin)
-    # The interactive bespoke deck (not part of `just all`) — references assets/ by relative path.
-    {{marp}} {{gen}} {{flags}} -o slides.presenter.html
-    site=$(mktemp -d)
-    cp pages/index.html      "$site/index.html"
-    cp slides.presenter.html "$site/deck.html"
-    cp slides.html           "$site/offline.html"
-    cp slides.pdf            "$site/slides.pdf"
-    cp -R assets             "$site/assets"
-    touch "$site/.nojekyll"   # serve paths verbatim; skip Jekyll processing
-    git -C "$site" init -q -b gh-pages
-    git -C "$site" add -A
-    git -C "$site" -c user.name="pages-deploy" -c user.email="pages@local" commit -qm "Deploy slides to GitHub Pages"
-    git -C "$site" push -f "$remote" gh-pages
-    rm -rf "$site"
-    echo "Pushed to gh-pages. If Pages isn't enabled yet: Settings -> Pages -> branch gh-pages / root."
 
 # Remove build scratch artifacts
 clean:
