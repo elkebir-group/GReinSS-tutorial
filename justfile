@@ -39,19 +39,19 @@ notes:
 # Build every deliverable: PDF deck, offline HTML, and speaker-notes handout
 all: pdf html notes
 
-# Execute GReinSS_demo.ipynb end-to-end and save it in place WITH outputs (figures embedded).
 # Uses whatever `jupyter` + kernel are on PATH (like the bare `python3`/`marp` calls above), so
 # activate your env first. Needs the code/ submodule and assets/*.{npz,pt} present.
-# Do NOT set MPLBACKEND=Agg — the Jupyter inline backend must stay active to embed the matplotlib PNGs.
+# Do NOT set MPLBACKEND=Agg — the inline backend must stay active to embed the matplotlib PNGs.
+# Execute GReinSS_demo.ipynb in place WITH outputs (figures embedded).
 notebook:
     jupyter nbconvert --to notebook --execute --inplace \
         --ExecutePreprocessor.timeout=1200 \
         GReinSS_demo.ipynb
 
-# Publish a version: build everything, cut a GitHub Release with the artifacts, AND deploy the
-# site to gh-pages — one command for both. Push commits first. Usage: just release v1.1
-# Needs `gh` authenticated; force-pushes an orphan gh-pages commit (no history bloat).
+# Push commits first. Usage: just release v1.1  (needs `gh` authenticated).
+# Force-pushes an orphan gh-pages commit each run (no history bloat).
 # One-time Pages setup: repo Settings -> Pages -> Source = "Deploy from a branch", branch = gh-pages / root.
+# Publish a version: cut a GitHub Release with the artifacts AND deploy the site to gh-pages.
 release tag: all
     #!/usr/bin/env bash
     set -euo pipefail
