@@ -23,7 +23,8 @@ GitHub Pages (interactive deck, PDF, and offline single-file viewer).
 
 > **Note.** The generated outputs — `slides.html`, `slides.pdf`, and `speaker-notes.{html,md}` —
 > are **not committed** (they're large binaries that churn on every edit; see `.gitignore`).
-> Build them locally with `just all`, or download pre-built `slides.html`/`slides.pdf` from the
+> Build them locally with `just all`, or download pre-built `slides.html`/`slides.pdf` — plus the
+> executed `GReinSS_demo.ipynb` (outputs embedded) — from the
 > [**Releases**](https://github.com/elkebir-group/GReinSS-tutorial/releases) page — the
 > `Build & release slides` workflow attaches them to each `v*` tag.
 
@@ -66,6 +67,14 @@ Run cells top to bottom. Timings on a laptop CPU:
 - **Demo 3 (graphs, pre-trained):** inference ~11 s (loads `assets/graph_model.pt`).
 - **Intuition (toy):** instant.
 
+To (re)generate the committed copy with all outputs embedded — the version attached to
+each Release — execute it headlessly (uses whatever `jupyter`/kernel is on `PATH`, so
+activate your env first):
+
+```bash
+just notebook   # runs GReinSS_demo.ipynb end-to-end in place, figures included (~4-5 min)
+```
+
 ### Re-generate the pre-trained models (optional)
 
 ```bash
@@ -85,6 +94,7 @@ just all        # rebuild slides.pdf + offline slides.html + speaker-notes hando
 just pdf        # just the PDF deck
 just html       # just the offline slides.html viewer
 just notes      # just the speaker-notes.{md,html} handout
+just notebook   # execute GReinSS_demo.ipynb in place, outputs embedded (ambient jupyter/kernel)
 just preview    # live preview in the browser, reloading on save
 just release v1.0  # build everything + publish a GitHub Release (via gh) with the artifacts
 just pages       # build the site + publish it to GitHub Pages (gh-pages branch)

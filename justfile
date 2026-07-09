@@ -39,7 +39,16 @@ notes:
 # Build every deliverable: PDF deck, offline HTML, and speaker-notes handout
 all: pdf html notes
 
-# Creates tag {{tag}} at the default-branch HEAD and attaches slides.html + slides.pdf.
+# Execute GReinSS_demo.ipynb end-to-end and save it in place WITH outputs (figures embedded).
+# Uses whatever `jupyter` + kernel are on PATH (like the bare `python3`/`marp` calls above), so
+# activate your env first. Needs the code/ submodule and assets/*.{npz,pt} present.
+# Do NOT set MPLBACKEND=Agg — the Jupyter inline backend must stay active to embed the matplotlib PNGs.
+notebook:
+    jupyter nbconvert --to notebook --execute --inplace \
+        --ExecutePreprocessor.timeout=1200 \
+        GReinSS_demo.ipynb
+
+# Creates tag {{tag}} at the default-branch HEAD and attaches slides.html + slides.pdf + the executed notebook.
 # Push commits first. Usage: just release v1.0
 # Build all deliverables, then publish them as a GitHub Release (needs `gh`, authenticated).
 release tag: all
@@ -48,7 +57,7 @@ release tag: all
     gh release create "{{tag}}" \
         --title "GReinSS tutorial {{tag}}" \
         --generate-notes \
-        slides.html slides.pdf
+        slides.html slides.pdf GReinSS_demo.ipynb
 
 # Re-splices assets/svg into slides.gen.md on every save of slides.md or an SVG.
 # Live preview in the browser that reloads automatically as you edit slides.md.

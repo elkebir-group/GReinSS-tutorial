@@ -57,3 +57,4 @@ jobs:
           files: |
             slides.html
             slides.pdf
+            GReinSS_demo.ipynb
