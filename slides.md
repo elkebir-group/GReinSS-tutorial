@@ -354,6 +354,13 @@ th:nth-child(3), td:nth-child(3) { width: 250px; }
 <!-- include: assets/svg/cna-example.svg -->
 
 </div>
+
+<div style="text-align:center; font-size:18px; color:var(--muted); margin-top:6px;">
+
+Actions extend <span style="color:#13294B">$\tau$</span>; we infer its terminal state <span style="color:#13294B">$S(\tau)$</span>.
+
+</div>
+
 </div>
 </div>
 
